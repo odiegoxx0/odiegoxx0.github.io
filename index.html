@@ -1,0 +1,2095 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Diego Pinheiro — Designer Gráfico & 3D</title>
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Syne:wght@400;600;700;800&family=Space+Mono:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+  :root {
+    --black: #060608;
+    --dark: #0d0d12;
+    --card: #111118;
+    --card2: #16161f;
+    --accent: #00e5a0;
+    --accent2: #7b5cfa;
+    --accent3: #ff4d6d;
+    --text: #f0eee8;
+    --muted: #7a7a8c;
+    --border: rgba(255,255,255,0.07);
+  }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    background: var(--black);
+    color: var(--text);
+    font-family: 'Syne', sans-serif;
+    overflow-x: hidden;
+    cursor: none;
+  }
+
+  /* CUSTOM CURSOR */
+  .cursor {
+    width: 12px; height: 12px;
+    background: var(--accent);
+    border-radius: 50%;
+    position: fixed;
+    pointer-events: none;
+    z-index: 9999;
+    transform: translate(-50%, -50%);
+    transition: transform 0.1s, width 0.3s, height 0.3s, background 0.3s;
+    mix-blend-mode: exclusion;
+  }
+  .cursor-ring {
+    width: 40px; height: 40px;
+    border: 1.5px solid var(--accent);
+    border-radius: 50%;
+    position: fixed;
+    pointer-events: none;
+    z-index: 9998;
+    transform: translate(-50%, -50%);
+    transition: transform 0.08s linear, width 0.3s, height 0.3s, border-color 0.3s;
+    opacity: 0.5;
+  }
+  body:has(a:hover) .cursor, body:has(button:hover) .cursor { width: 24px; height: 24px; background: var(--accent2); }
+
+  /* SCROLLBAR */
+  ::-webkit-scrollbar { width: 3px; }
+  ::-webkit-scrollbar-track { background: var(--black); }
+  ::-webkit-scrollbar-thumb { background: var(--accent); border-radius: 2px; }
+
+  /* NAV */
+  nav {
+    position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+    display: flex; justify-content: space-between; align-items: center;
+    padding: 1.5rem 4rem;
+    backdrop-filter: blur(20px);
+    background: rgba(6,6,8,0.7);
+    border-bottom: 1px solid var(--border);
+    transition: all 0.3s;
+  }
+  .nav-logo {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 1.6rem;
+    letter-spacing: 3px;
+    color: var(--accent);
+    text-decoration: none;
+  }
+  .nav-logo span { color: var(--text); }
+  .nav-links { display: flex; gap: 2.5rem; list-style: none; }
+  .nav-links a {
+    color: var(--muted);
+    text-decoration: none;
+    font-size: 0.8rem;
+    font-weight: 600;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    transition: color 0.3s;
+  }
+  .nav-links a:hover { color: var(--accent); }
+  .nav-cta {
+    background: var(--accent);
+    color: var(--black);
+    padding: 0.6rem 1.5rem;
+    font-size: 0.75rem;
+    font-weight: 700;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    text-decoration: none;
+    clip-path: polygon(0 0, calc(100% - 10px) 0, 100% 10px, 100% 100%, 10px 100%, 0 calc(100% - 10px));
+    transition: all 0.3s;
+  }
+  .nav-cta:hover { background: var(--accent2); color: white; }
+
+  /* HERO */
+  #hero {
+    min-height: 100vh;
+    display: flex; flex-direction: column; justify-content: center;
+    padding: 8rem 4rem 4rem;
+    position: relative; overflow: hidden;
+  }
+  .hero-bg {
+    position: absolute; inset: 0; z-index: 0;
+    background:
+      radial-gradient(ellipse 60% 60% at 70% 50%, rgba(0,229,160,0.07) 0%, transparent 60%),
+      radial-gradient(ellipse 40% 50% at 20% 80%, rgba(123,92,250,0.08) 0%, transparent 60%),
+      radial-gradient(ellipse 30% 30% at 80% 10%, rgba(255,77,109,0.05) 0%, transparent 50%);
+  }
+  .hero-noise {
+    position: absolute; inset: 0; z-index: 0; opacity: 0.025;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)'/%3E%3C/svg%3E");
+    background-size: 200px;
+  }
+  .hero-grid {
+    position: absolute; inset: 0; z-index: 0; opacity: 0.04;
+    background-image: linear-gradient(var(--accent) 1px, transparent 1px), linear-gradient(90deg, var(--accent) 1px, transparent 1px);
+    background-size: 60px 60px;
+  }
+  .hero-content { position: relative; z-index: 1; max-width: 900px; }
+  .hero-tag {
+    display: inline-flex; align-items: center; gap: 0.5rem;
+    background: rgba(0,229,160,0.1); border: 1px solid rgba(0,229,160,0.3);
+    color: var(--accent); padding: 0.4rem 1rem;
+    font-size: 0.7rem; font-weight: 700; letter-spacing: 3px; text-transform: uppercase;
+    margin-bottom: 2rem;
+    animation: fadeInDown 0.8s ease both;
+  }
+  .hero-tag::before { content:''; width:6px; height:6px; background:var(--accent); border-radius:50%; animation: pulse 2s infinite; }
+  @keyframes pulse { 0%,100%{opacity:1;transform:scale(1)} 50%{opacity:0.5;transform:scale(1.5)} }
+
+  .hero-name {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: clamp(5rem, 14vw, 14rem);
+    line-height: 0.9;
+    letter-spacing: -2px;
+    animation: fadeInUp 0.8s 0.2s ease both;
+  }
+  .hero-name .line1 { color: var(--text); display: block; }
+  .hero-name .line2 {
+    color: transparent;
+    -webkit-text-stroke: 1px rgba(255,255,255,0.2);
+    display: block;
+  }
+  .hero-name .accent-word { color: var(--accent); }
+
+  .hero-sub {
+    margin-top: 2rem; display: flex; align-items: center; gap: 2rem;
+    animation: fadeInUp 0.8s 0.4s ease both;
+  }
+  .hero-desc {
+    max-width: 400px; font-size: 1rem; line-height: 1.8; color: var(--muted); font-weight: 400;
+  }
+  .hero-btns { display: flex; gap: 1rem; flex-wrap: wrap; margin-top: 2.5rem; animation: fadeInUp 0.8s 0.6s ease both; }
+  .btn-primary {
+    background: var(--accent); color: var(--black);
+    padding: 1rem 2.5rem; font-weight: 700; font-size: 0.85rem; letter-spacing: 2px;
+    text-decoration: none; text-transform: uppercase;
+    clip-path: polygon(0 0, calc(100% - 12px) 0, 100% 12px, 100% 100%, 12px 100%, 0 calc(100% - 12px));
+    transition: all 0.3s;
+    display: inline-flex; align-items: center; gap: 0.5rem;
+  }
+  .btn-primary:hover { background: var(--accent2); color: white; transform: translateY(-2px); }
+  .btn-outline {
+    border: 1px solid rgba(255,255,255,0.2); color: var(--text);
+    padding: 1rem 2.5rem; font-weight: 600; font-size: 0.85rem; letter-spacing: 2px;
+    text-decoration: none; text-transform: uppercase;
+    transition: all 0.3s; display: inline-flex; align-items: center; gap: 0.5rem;
+  }
+  .btn-outline:hover { border-color: var(--accent); color: var(--accent); transform: translateY(-2px); }
+
+  .hero-stats {
+    position: absolute; bottom: 3rem; right: 4rem; z-index: 1;
+    display: flex; gap: 2rem;
+    animation: fadeIn 1s 1s ease both;
+  }
+  .stat-item { text-align: center; }
+  .stat-num {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 2.5rem; color: var(--accent); line-height: 1;
+  }
+  .stat-label { font-size: 0.65rem; color: var(--muted); letter-spacing: 2px; text-transform: uppercase; margin-top: 0.3rem; }
+
+  .scroll-indicator {
+    position: absolute; bottom: 3rem; left: 4rem; z-index: 1;
+    display: flex; align-items: center; gap: 0.8rem;
+    animation: fadeIn 1s 1.2s ease both;
+  }
+  .scroll-line { width: 40px; height: 1px; background: var(--muted); position: relative; overflow: hidden; }
+  .scroll-line::after { content:''; position:absolute; inset:0; background:var(--accent); animation: scrollAnim 2s ease infinite; }
+  @keyframes scrollAnim { 0%{transform:translateX(-100%)} 100%{transform:translateX(100%)} }
+  .scroll-text { font-size: 0.65rem; letter-spacing: 3px; text-transform: uppercase; color: var(--muted); }
+
+  /* MARQUEE */
+  .marquee-wrap {
+    background: var(--accent); padding: 1rem 0; overflow: hidden;
+    border-top: 1px solid rgba(0,0,0,0.2); border-bottom: 1px solid rgba(0,0,0,0.2);
+  }
+  .marquee-track {
+    display: flex; gap: 3rem;
+    animation: marquee 20s linear infinite;
+    width: max-content;
+  }
+  .marquee-item {
+    display: flex; align-items: center; gap: 1rem; white-space: nowrap;
+    font-family: 'Bebas Neue', sans-serif; font-size: 1.2rem; letter-spacing: 3px;
+    color: var(--black); opacity: 0.8;
+  }
+  .marquee-dot { width: 6px; height: 6px; background: var(--black); border-radius: 50%; opacity: 0.5; }
+  @keyframes marquee { 0%{transform:translateX(0)} 100%{transform:translateX(-50%)} }
+
+  /* ABOUT SECTION */
+  #about {
+    padding: 8rem 4rem;
+    display: grid; grid-template-columns: 1fr 1fr; gap: 6rem; align-items: center;
+    position: relative;
+  }
+  .about-visual {
+    position: relative;
+  }
+  .about-img-frame {
+    position: relative; width: 100%; padding-bottom: 120%;
+    background: var(--card);
+    clip-path: polygon(0 0, calc(100% - 30px) 0, 100% 30px, 100% 100%, 30px 100%, 0 calc(100% - 30px));
+    overflow: hidden;
+  }
+  .about-img-inner {
+    position: absolute; inset: 0;
+    background: linear-gradient(135deg, var(--card2) 0%, #1a1a2e 100%);
+    display: flex; align-items: center; justify-content: center;
+  }
+  .about-avatar {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 8rem; color: rgba(0,229,160,0.15);
+    letter-spacing: 10px;
+  }
+  .about-badge {
+    position: absolute; top: -1rem; right: -1rem;
+    width: 130px; height: 130px;
+    background: var(--accent); border-radius: 50%;
+    display: flex; flex-direction: column; align-items: center; justify-content: center;
+    animation: rotate 10s linear infinite;
+    clip-path: none !important;
+    z-index: 2;
+  }
+  .about-badge-num {
+    font-family: 'Bebas Neue', sans-serif; font-size: 2.8rem;
+    color: var(--black); line-height: 1;
+  }
+  .about-badge-label { font-size: 0.6rem; font-weight: 700; color: var(--black); letter-spacing: 1px; text-align: center; }
+  @keyframes rotate { from{transform:rotate(0)} to{transform:rotate(360deg)} }
+
+  .about-accent-line {
+    position: absolute; bottom: -1rem; left: 2rem;
+    width: 80%; height: 3px;
+    background: linear-gradient(90deg, var(--accent), transparent);
+  }
+  .about-text { }
+  .section-eyebrow {
+    font-size: 0.7rem; font-weight: 700; letter-spacing: 4px;
+    text-transform: uppercase; color: var(--accent);
+    margin-bottom: 1rem; display: flex; align-items: center; gap: 1rem;
+  }
+  .section-eyebrow::before { content:''; width: 30px; height: 1px; background: var(--accent); }
+  .section-title {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: clamp(2.5rem, 5vw, 4.5rem);
+    line-height: 1; margin-bottom: 1.5rem;
+    letter-spacing: 1px;
+  }
+  .section-title .highlight { color: var(--accent); }
+  .about-bio { color: var(--muted); line-height: 1.9; margin-bottom: 2rem; font-weight: 400; }
+  .skills-grid {
+    display: grid; grid-template-columns: 1fr 1fr; gap: 0.75rem; margin-top: 2rem;
+  }
+  .skill-pill {
+    background: var(--card); border: 1px solid var(--border);
+    padding: 0.5rem 1rem;
+    font-size: 0.78rem; font-weight: 600; letter-spacing: 1px;
+    display: flex; align-items: center; gap: 0.5rem; color: var(--text);
+    transition: all 0.3s;
+  }
+  .skill-pill::before { content:''; width: 6px; height: 6px; background: var(--accent); border-radius: 50%; flex-shrink: 0; }
+  .skill-pill:hover { border-color: var(--accent); color: var(--accent); transform: translateX(4px); }
+
+  /* SERVICES */
+  #services { padding: 8rem 4rem; background: var(--dark); }
+  .section-header { margin-bottom: 4rem; }
+  .services-grid {
+    display: grid; grid-template-columns: repeat(3, 1fr); gap: 1.5px;
+    background: var(--border);
+  }
+  .service-card {
+    background: var(--dark); padding: 3rem 2.5rem;
+    border: 1px solid var(--border);
+    position: relative; overflow: hidden;
+    transition: all 0.4s;
+    group: true;
+  }
+  .service-card::before {
+    content: ''; position: absolute; bottom: 0; left: 0; right: 0;
+    height: 2px; background: linear-gradient(90deg, var(--accent), var(--accent2));
+    transform: scaleX(0); transform-origin: left;
+    transition: transform 0.4s;
+  }
+  .service-card:hover { background: var(--card); transform: translateY(-4px); }
+  .service-card:hover::before { transform: scaleX(1); }
+  .service-num {
+    font-family: 'Space Mono', monospace;
+    font-size: 0.7rem; color: var(--accent); margin-bottom: 1.5rem; letter-spacing: 2px;
+  }
+  .service-icon {
+    width: 56px; height: 56px; margin-bottom: 1.5rem;
+    background: linear-gradient(135deg, rgba(0,229,160,0.1), rgba(123,92,250,0.1));
+    border: 1px solid rgba(0,229,160,0.2);
+    display: flex; align-items: center; justify-content: center;
+    font-size: 1.5rem;
+    clip-path: polygon(0 0, calc(100% - 8px) 0, 100% 8px, 100% 100%, 8px 100%, 0 calc(100% - 8px));
+  }
+  .service-title {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 1.8rem; letter-spacing: 2px; margin-bottom: 1rem; color: var(--text);
+  }
+  .service-desc { color: var(--muted); font-size: 0.9rem; line-height: 1.8; font-weight: 400; }
+  .service-tags { display: flex; flex-wrap: wrap; gap: 0.5rem; margin-top: 1.5rem; }
+  .service-tag {
+    font-size: 0.65rem; font-weight: 700; letter-spacing: 1px; text-transform: uppercase;
+    background: rgba(0,229,160,0.08); border: 1px solid rgba(0,229,160,0.2);
+    color: var(--accent); padding: 0.3rem 0.7rem;
+  }
+
+  /* EXPERIENCE */
+  #experience { padding: 8rem 4rem; }
+  .exp-layout { display: grid; grid-template-columns: 1fr 2fr; gap: 6rem; align-items: start; }
+  .exp-nav { position: sticky; top: 8rem; }
+  .exp-nav-item {
+    padding: 1.2rem 0; border-bottom: 1px solid var(--border);
+    cursor: pointer; transition: all 0.3s;
+    font-size: 0.8rem; font-weight: 600; letter-spacing: 2px; text-transform: uppercase;
+    color: var(--muted); display: flex; align-items: center; gap: 1rem;
+  }
+  .exp-nav-item::before { content:''; width: 0; height: 1px; background: var(--accent); transition: width 0.3s; }
+  .exp-nav-item.active { color: var(--accent); }
+  .exp-nav-item.active::before { width: 30px; }
+  .exp-cards { display: flex; flex-direction: column; gap: 2rem; }
+  .exp-card {
+    background: var(--card); border: 1px solid var(--border);
+    padding: 2.5rem;
+    position: relative; overflow: hidden;
+    clip-path: polygon(0 0, calc(100% - 20px) 0, 100% 20px, 100% 100%, 20px 100%, 0 calc(100% - 20px));
+  }
+  .exp-card::before {
+    content: ''; position: absolute; left: 0; top: 0; bottom: 0;
+    width: 3px; background: linear-gradient(180deg, var(--accent), var(--accent2));
+  }
+  .exp-card-year {
+    font-family: 'Space Mono', monospace; font-size: 0.7rem;
+    color: var(--accent); letter-spacing: 2px; margin-bottom: 0.5rem;
+  }
+  .exp-card-title {
+    font-family: 'Bebas Neue', sans-serif; font-size: 1.8rem;
+    letter-spacing: 2px; margin-bottom: 0.3rem;
+  }
+  .exp-card-company { color: var(--muted); font-size: 0.85rem; margin-bottom: 1.5rem; }
+  .exp-bullets { list-style: none; display: flex; flex-direction: column; gap: 0.7rem; }
+  .exp-bullets li {
+    font-size: 0.88rem; color: var(--muted); line-height: 1.7; font-weight: 400;
+    display: flex; gap: 0.7rem;
+  }
+  .exp-bullets li::before { content: '▸'; color: var(--accent); flex-shrink: 0; }
+
+  /* PORTFOLIO */
+  #portfolio { padding: 8rem 4rem; background: var(--dark); }
+  .filter-bar {
+    display: flex; gap: 1rem; margin-bottom: 3rem; flex-wrap: wrap;
+  }
+  .filter-btn {
+    padding: 0.5rem 1.5rem; border: 1px solid var(--border);
+    background: transparent; color: var(--muted); cursor: pointer;
+    font-family: 'Syne', sans-serif; font-size: 0.75rem; font-weight: 700; letter-spacing: 2px;
+    text-transform: uppercase; transition: all 0.3s;
+  }
+  .filter-btn.active, .filter-btn:hover {
+    background: var(--accent); color: var(--black); border-color: var(--accent);
+  }
+  .portfolio-grid {
+    display: grid; grid-template-columns: repeat(3, 1fr); gap: 1.5rem;
+  }
+  .portfolio-item {
+    position: relative; overflow: hidden; cursor: none;
+    background: var(--card);
+    aspect-ratio: 4/3;
+    clip-path: polygon(0 0, calc(100% - 15px) 0, 100% 15px, 100% 100%, 15px 100%, 0 calc(100% - 15px));
+  }
+  .portfolio-item:nth-child(4) { grid-column: span 2; }
+  .portfolio-bg {
+    width: 100%; height: 100%; position: absolute; inset: 0;
+    display: flex; align-items: center; justify-content: center;
+    font-family: 'Bebas Neue', sans-serif;
+    transition: transform 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+  }
+  .portfolio-item:hover .portfolio-bg { transform: scale(1.08); }
+  .portfolio-overlay {
+    position: absolute; inset: 0;
+    background: linear-gradient(to top, rgba(6,6,8,0.95) 0%, rgba(6,6,8,0.3) 60%, transparent 100%);
+    opacity: 0; transition: opacity 0.4s;
+    display: flex; flex-direction: column; justify-content: flex-end;
+    padding: 2rem;
+  }
+  .portfolio-item:hover .portfolio-overlay { opacity: 1; }
+  .portfolio-cat { font-size: 0.65rem; letter-spacing: 3px; text-transform: uppercase; color: var(--accent); margin-bottom: 0.5rem; }
+  .portfolio-name { font-family: 'Bebas Neue', sans-serif; font-size: 1.6rem; letter-spacing: 2px; }
+  .portfolio-arrow {
+    position: absolute; top: 1.5rem; right: 1.5rem;
+    width: 40px; height: 40px; background: var(--accent);
+    display: flex; align-items: center; justify-content: center;
+    clip-path: polygon(0 0, calc(100% - 6px) 0, 100% 6px, 100% 100%, 6px 100%, 0 calc(100% - 6px));
+    transform: scale(0); transition: transform 0.3s; font-size: 1rem; color: var(--black);
+  }
+  .portfolio-item:hover .portfolio-arrow { transform: scale(1); }
+
+  /* SKILLS VISUAL */
+  #skills { padding: 8rem 4rem; }
+  .skills-main { display: grid; grid-template-columns: 1fr 1fr; gap: 4rem; }
+  .skill-category { margin-bottom: 3rem; }
+  .skill-cat-title {
+    font-family: 'Bebas Neue', sans-serif; font-size: 1.2rem; letter-spacing: 3px;
+    color: var(--muted); margin-bottom: 1.5rem;
+  }
+  .skill-bars { display: flex; flex-direction: column; gap: 1.2rem; }
+  .skill-bar-item { }
+  .skill-bar-header { display: flex; justify-content: space-between; margin-bottom: 0.5rem; }
+  .skill-bar-name { font-size: 0.85rem; font-weight: 600; }
+  .skill-bar-pct { font-family: 'Space Mono', monospace; font-size: 0.75rem; color: var(--accent); }
+  .skill-bar-track {
+    height: 3px; background: rgba(255,255,255,0.07); position: relative; overflow: hidden;
+  }
+  .skill-bar-fill {
+    height: 100%; background: linear-gradient(90deg, var(--accent), var(--accent2));
+    transform: scaleX(0); transform-origin: left;
+    transition: transform 1s cubic-bezier(0.16, 1, 0.3, 1);
+  }
+  .skill-bar-fill.animated { transform: scaleX(1); }
+
+  .tools-section { margin-top: 0; }
+  .tools-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 1rem; margin-top: 1.5rem; }
+  .tool-card {
+    background: var(--card); border: 1px solid var(--border);
+    padding: 1.5rem 1rem; text-align: center;
+    transition: all 0.3s; cursor: default;
+  }
+  .tool-card:hover { border-color: var(--accent); transform: translateY(-4px); }
+  .tool-icon { font-size: 1.8rem; margin-bottom: 0.5rem; display: block; }
+  .tool-name { font-size: 0.7rem; font-weight: 700; letter-spacing: 1px; text-transform: uppercase; color: var(--muted); }
+
+  /* CONTACT */
+  #contact { padding: 8rem 4rem; background: var(--dark); position: relative; overflow: hidden; }
+  .contact-glow {
+    position: absolute; top: -200px; left: 50%; transform: translateX(-50%);
+    width: 800px; height: 400px;
+    background: radial-gradient(ellipse, rgba(0,229,160,0.06) 0%, transparent 70%);
+    pointer-events: none;
+  }
+  .contact-layout { display: grid; grid-template-columns: 1fr 1fr; gap: 6rem; align-items: start; position: relative; z-index: 1; }
+  .contact-left { }
+  .contact-big {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: clamp(3rem, 7vw, 7rem); line-height: 0.95;
+    letter-spacing: -1px; margin-bottom: 2rem;
+  }
+  .contact-big .accent { color: var(--accent); }
+  .contact-info { display: flex; flex-direction: column; gap: 1.5rem; margin-top: 3rem; }
+  .contact-info-item {
+    display: flex; align-items: center; gap: 1rem;
+    padding: 1.2rem 1.5rem; border: 1px solid var(--border);
+    background: var(--card); transition: all 0.3s;
+  }
+  .contact-info-item:hover { border-color: var(--accent); transform: translateX(4px); }
+  .contact-info-icon { color: var(--accent); font-size: 1.2rem; }
+  .contact-info-text { font-size: 0.9rem; }
+  .contact-info-label { font-size: 0.65rem; letter-spacing: 2px; text-transform: uppercase; color: var(--muted); display: block; }
+
+  .contact-form { display: flex; flex-direction: column; gap: 1.2rem; }
+  .form-group { position: relative; }
+  .form-input, .form-textarea {
+    width: 100%; background: var(--card); border: 1px solid var(--border);
+    color: var(--text); padding: 1.2rem 1.5rem;
+    font-family: 'Syne', sans-serif; font-size: 0.9rem; font-weight: 400;
+    outline: none; transition: all 0.3s;
+    clip-path: polygon(0 0, calc(100% - 10px) 0, 100% 10px, 100% 100%, 10px 100%, 0 calc(100% - 10px));
+    resize: none;
+  }
+  .form-input::placeholder, .form-textarea::placeholder { color: var(--muted); }
+  .form-input:focus, .form-textarea:focus { border-color: var(--accent); }
+  .form-textarea { min-height: 140px; }
+  .form-submit {
+    background: var(--accent); color: var(--black); border: none;
+    padding: 1.2rem 2.5rem; font-family: 'Syne', sans-serif;
+    font-size: 0.85rem; font-weight: 700; letter-spacing: 3px; text-transform: uppercase;
+    cursor: pointer; transition: all 0.3s; align-self: flex-start;
+    clip-path: polygon(0 0, calc(100% - 12px) 0, 100% 12px, 100% 100%, 12px 100%, 0 calc(100% - 12px));
+    display: flex; align-items: center; gap: 0.8rem;
+  }
+  .form-submit:hover { background: var(--accent2); color: white; transform: translateY(-2px); }
+
+  /* FOOTER */
+  footer {
+    border-top: 1px solid var(--border); padding: 2rem 4rem;
+    display: flex; justify-content: space-between; align-items: center;
+  }
+  .footer-logo {
+    font-family: 'Bebas Neue', sans-serif; font-size: 1.4rem; letter-spacing: 3px; color: var(--accent);
+  }
+  .footer-text { font-size: 0.75rem; color: var(--muted); }
+  .footer-social { display: flex; gap: 1rem; }
+  .social-btn {
+    width: 36px; height: 36px; border: 1px solid var(--border);
+    display: flex; align-items: center; justify-content: center;
+    font-size: 0.8rem; color: var(--muted); text-decoration: none;
+    transition: all 0.3s;
+    clip-path: polygon(0 0, calc(100% - 6px) 0, 100% 6px, 100% 100%, 6px 100%, 0 calc(100% - 6px));
+  }
+  .social-btn:hover { border-color: var(--accent); color: var(--accent); background: rgba(0,229,160,0.1); }
+
+  /* ANIMATIONS */
+  @keyframes fadeInDown { from{opacity:0;transform:translateY(-20px)} to{opacity:1;transform:translateY(0)} }
+  @keyframes fadeInUp { from{opacity:0;transform:translateY(30px)} to{opacity:1;transform:translateY(0)} }
+  @keyframes fadeIn { from{opacity:0} to{opacity:1} }
+
+  .reveal { opacity: 0; transform: translateY(30px); transition: all 0.8s cubic-bezier(0.16, 1, 0.3, 1); }
+  .reveal.visible { opacity: 1; transform: translateY(0); }
+  .reveal-delay-1 { transition-delay: 0.1s; }
+  .reveal-delay-2 { transition-delay: 0.2s; }
+  .reveal-delay-3 { transition-delay: 0.3s; }
+
+  /* RESPONSIVE */
+  @media (max-width: 1024px) {
+    nav { padding: 1.2rem 2rem; }
+    #hero, #about, #services, #experience, #portfolio, #skills, #contact { padding: 6rem 2rem; }
+    .services-grid { grid-template-columns: 1fr 1fr; }
+    footer { padding: 2rem; }
+  }
+  @media (max-width: 768px) {
+    nav { padding: 1rem 1.5rem; }
+    .nav-links { display: none; }
+    .hero-name { font-size: clamp(4rem, 18vw, 8rem); }
+    #about { grid-template-columns: 1fr; gap: 3rem; }
+    .about-visual { max-width: 360px; margin: 0 auto; }
+    .services-grid { grid-template-columns: 1fr; }
+    .exp-layout { grid-template-columns: 1fr; gap: 3rem; }
+    .exp-nav { position: static; }
+    .portfolio-grid { grid-template-columns: 1fr 1fr; }
+    .portfolio-item:nth-child(4) { grid-column: auto; }
+    .skills-main { grid-template-columns: 1fr; }
+    .tools-grid { grid-template-columns: repeat(3, 1fr); }
+    .contact-layout { grid-template-columns: 1fr; gap: 3rem; }
+    .hero-stats { position: static; margin-top: 3rem; }
+    .scroll-indicator { display: none; }
+    footer { flex-direction: column; gap: 1rem; text-align: center; }
+  }
+
+  /* ===== PROJECT MODAL ===== */
+  .pmodal-overlay {
+    position: fixed; inset: 0; z-index: 2000;
+    background: rgba(6,6,8,0.92);
+    backdrop-filter: blur(16px);
+    display: flex; align-items: center; justify-content: center;
+    opacity: 0; pointer-events: none;
+    transition: opacity 0.4s ease;
+    padding: 2rem;
+  }
+  .pmodal-overlay.open {
+    opacity: 1; pointer-events: all;
+  }
+  .pmodal-container {
+    width: 100%; max-width: 1100px; max-height: 90vh;
+    background: var(--card);
+    border: 1px solid rgba(0,229,160,0.15);
+    box-shadow: 0 0 80px rgba(0,229,160,0.05), 0 40px 80px rgba(0,0,0,0.6);
+    position: relative;
+    transform: translateY(30px) scale(0.97);
+    transition: transform 0.4s cubic-bezier(0.16,1,0.3,1);
+    clip-path: polygon(0 0, calc(100% - 20px) 0, 100% 20px, 100% 100%, 20px 100%, 0 calc(100% - 20px));
+    overflow: hidden;
+  }
+  .pmodal-overlay.open .pmodal-container {
+    transform: translateY(0) scale(1);
+  }
+  .pmodal-close {
+    position: absolute; top: 1.2rem; right: 1.2rem; z-index: 10;
+    background: rgba(255,255,255,0.07); border: 1px solid var(--border);
+    color: var(--text); width: 40px; height: 40px;
+    font-size: 1rem; cursor: pointer;
+    display: flex; align-items: center; justify-content: center;
+    transition: all 0.3s; clip-path: polygon(0 0, calc(100% - 6px) 0, 100% 6px, 100% 100%, 6px 100%, 0 calc(100% - 6px));
+  }
+  .pmodal-close:hover { background: var(--accent3); border-color: var(--accent3); color: white; }
+  .pmodal-inner {
+    display: grid; grid-template-columns: 1.4fr 1fr;
+    height: 80vh; max-height: 650px;
+    overflow: hidden;
+  }
+  .pmodal-preview {
+    position: relative; overflow: hidden;
+    background: var(--dark);
+    border-right: 1px solid var(--border);
+  }
+  .pmodal-info {
+    padding: 2.5rem; overflow-y: auto; display: flex; flex-direction: column; gap: 1.5rem;
+  }
+  .pmodal-info::-webkit-scrollbar { width: 2px; }
+  .pmodal-info::-webkit-scrollbar-thumb { background: var(--accent); }
+  .pinfo-eyebrow {
+    font-size: 0.65rem; font-weight: 700; letter-spacing: 4px; text-transform: uppercase; color: var(--accent);
+  }
+  .pinfo-title {
+    font-family: 'Bebas Neue', sans-serif; font-size: 2.2rem; letter-spacing: 2px; line-height: 1; color: var(--text);
+  }
+  .pinfo-desc { color: var(--muted); font-size: 0.9rem; line-height: 1.9; }
+  .pinfo-tags { display: flex; flex-wrap: wrap; gap: 0.5rem; }
+  .pinfo-tag {
+    font-size: 0.65rem; font-weight: 700; letter-spacing: 1px; text-transform: uppercase;
+    background: rgba(0,229,160,0.08); border: 1px solid rgba(0,229,160,0.2);
+    color: var(--accent); padding: 0.3rem 0.8rem;
+  }
+  .pinfo-meta { display: flex; flex-direction: column; gap: 0.6rem; }
+  .pinfo-meta-row {
+    display: flex; justify-content: space-between; align-items: center;
+    padding-bottom: 0.6rem; border-bottom: 1px solid var(--border);
+    font-size: 0.78rem;
+  }
+  .pinfo-meta-label { color: var(--muted); font-weight: 600; letter-spacing: 1px; }
+  .pinfo-meta-val { color: var(--text); font-weight: 600; }
+  .pinfo-cta {
+    margin-top: auto; background: var(--accent); color: var(--black);
+    padding: 0.9rem 1.5rem; font-weight: 700; font-size: 0.8rem; letter-spacing: 2px;
+    text-transform: uppercase; border: none; cursor: pointer; width: 100%;
+    clip-path: polygon(0 0, calc(100% - 10px) 0, 100% 10px, 100% 100%, 10px 100%, 0 calc(100% - 10px));
+    transition: all 0.3s;
+  }
+  .pinfo-cta:hover { background: var(--accent2); color: white; }
+
+  /* BROWSER MOCKUP */
+  .browser-mockup {
+    width: 100%; height: 100%;
+    display: flex; flex-direction: column;
+    background: #0e0e16;
+  }
+  .browser-bar {
+    background: #1a1a28; padding: 0.6rem 1rem;
+    display: flex; align-items: center; gap: 0.5rem;
+    border-bottom: 1px solid var(--border); flex-shrink: 0;
+  }
+  .browser-dot { width: 10px; height: 10px; border-radius: 50%; }
+  .browser-url {
+    flex: 1; background: #0d0d18; border-radius: 3px;
+    padding: 0.3rem 0.8rem; font-family: 'Space Mono', monospace;
+    font-size: 0.65rem; color: var(--muted); margin-left: 0.5rem;
+  }
+  .browser-content { flex: 1; overflow: hidden; position: relative; }
+
+  /* PHONE MOCKUP */
+  .phone-wrap {
+    width: 100%; height: 100%;
+    display: flex; align-items: center; justify-content: center;
+    background: radial-gradient(ellipse at center, #1a1a2e 0%, #060608 70%);
+    padding: 2rem;
+  }
+  .phone-frame {
+    width: 220px; height: 440px; background: #111118;
+    border: 2px solid #333345; border-radius: 36px;
+    position: relative; overflow: hidden;
+    box-shadow: 0 0 40px rgba(0,229,160,0.1), 0 20px 60px rgba(0,0,0,0.8);
+  }
+  .phone-notch {
+    position: absolute; top: 0; left: 50%; transform: translateX(-50%);
+    width: 80px; height: 24px; background: #111118;
+    border-bottom-left-radius: 14px; border-bottom-right-radius: 14px; z-index: 2;
+  }
+  .phone-screen { width: 100%; height: 100%; overflow: hidden; }
+
+  /* BRAND MOCKUP */
+  .brand-stage {
+    width: 100%; height: 100%;
+    background: #0d0d12;
+    display: flex; flex-direction: column;
+    align-items: center; justify-content: center;
+    gap: 1.5rem; padding: 2rem;
+    overflow: hidden;
+  }
+  .brand-card {
+    background: var(--card2); border: 1px solid var(--border);
+    width: 100%; padding: 1.5rem; display: flex; align-items: center; gap: 1rem;
+    animation: slideInBrand 0.5s ease both;
+  }
+  @keyframes slideInBrand { from{opacity:0;transform:translateX(-20px)} to{opacity:1;transform:translateX(0)} }
+  .brand-color-row { display: flex; gap: 0.5rem; width: 100%; }
+  .brand-swatch { height: 40px; flex: 1; border-radius: 2px; }
+
+  /* MOTION CANVAS */
+  #motion-canvas { width: 100%; height: 100%; display: block; }
+
+  /* THREE.JS CANVAS */
+  #three-canvas, #three-canvas2 { width: 100% !important; height: 100% !important; display: block; }
+  .three-hint {
+    position: absolute; bottom: 1rem; left: 50%; transform: translateX(-50%);
+    font-size: 0.65rem; letter-spacing: 2px; text-transform: uppercase; color: var(--muted);
+    background: rgba(6,6,8,0.7); padding: 0.3rem 0.8rem; border: 1px solid var(--border);
+    pointer-events: none;
+  }
+
+  /* SLIDE DECK */
+  .slide-deck { width: 100%; height: 100%; position: relative; overflow: hidden; }
+  .slide { position: absolute; inset: 0; opacity: 0; transition: opacity 0.5s; pointer-events: none; display: flex; align-items: center; justify-content: center; padding: 2.5rem; flex-direction: column; gap: 1rem; }
+  .slide.active { opacity: 1; pointer-events: all; }
+  .slide-nav {
+    position: absolute; bottom: 1rem; left: 50%; transform: translateX(-50%);
+    display: flex; gap: 0.5rem; z-index: 5;
+  }
+  .slide-dot { width: 6px; height: 6px; border-radius: 50%; background: var(--muted); cursor: pointer; transition: all 0.3s; }
+  .slide-dot.active { background: var(--accent); width: 20px; border-radius: 3px; }
+  .slide-arrow {
+    position: absolute; top: 50%; transform: translateY(-50%);
+    background: rgba(0,229,160,0.1); border: 1px solid rgba(0,229,160,0.2);
+    color: var(--accent); width: 36px; height: 36px;
+    display: flex; align-items: center; justify-content: center; cursor: pointer; z-index: 5; font-size: 1rem;
+    transition: all 0.3s;
+  }
+  .slide-arrow:hover { background: var(--accent); color: var(--black); }
+  .slide-prev { left: 1rem; }
+  .slide-next { right: 1rem; }
+
+  @media (max-width: 768px) {
+    .pmodal-inner { grid-template-columns: 1fr; }
+    .pmodal-preview { height: 280px; border-right: none; border-bottom: 1px solid var(--border); }
+    .pmodal-info { max-height: 300px; }
+  }
+
+  /* ===== CONTACT PAGE OVERLAY ===== */
+  .cpage-overlay {
+    position: fixed; inset: 0; z-index: 3000;
+    background: var(--black);
+    opacity: 0; pointer-events: none;
+    transition: opacity 0.5s ease;
+    overflow-y: auto;
+  }
+  .cpage-overlay.open {
+    opacity: 1; pointer-events: all;
+  }
+  .cpage-inner {
+    min-height: 100vh;
+    display: flex; flex-direction: column;
+    position: relative; overflow: hidden;
+  }
+  .cpage-bg {
+    position: fixed; inset: 0; z-index: 0; pointer-events: none;
+    background:
+      radial-gradient(ellipse 50% 60% at 80% 30%, rgba(0,229,160,0.06) 0%, transparent 60%),
+      radial-gradient(ellipse 40% 40% at 15% 70%, rgba(123,92,250,0.07) 0%, transparent 60%);
+  }
+  .cpage-grid {
+    position: fixed; inset: 0; z-index: 0; opacity: 0.03; pointer-events: none;
+    background-image: linear-gradient(var(--accent) 1px, transparent 1px), linear-gradient(90deg, var(--accent) 1px, transparent 1px);
+    background-size: 60px 60px;
+  }
+  .cpage-header {
+    position: relative; z-index: 1;
+    display: flex; justify-content: space-between; align-items: center;
+    padding: 2rem 4rem;
+    border-bottom: 1px solid var(--border);
+    background: rgba(6,6,8,0.8); backdrop-filter: blur(20px);
+  }
+  .cpage-logo {
+    font-family: 'Bebas Neue', sans-serif; font-size: 1.6rem;
+    letter-spacing: 3px; color: var(--accent);
+  }
+  .cpage-logo span { color: var(--text); }
+  .cpage-back {
+    background: none; border: 1px solid var(--border); color: var(--muted);
+    padding: 0.6rem 1.4rem; font-family: 'Syne', sans-serif;
+    font-size: 0.75rem; font-weight: 700; letter-spacing: 2px; text-transform: uppercase;
+    cursor: pointer; transition: all 0.3s;
+    clip-path: polygon(0 0, calc(100% - 8px) 0, 100% 8px, 100% 100%, 8px 100%, 0 calc(100% - 8px));
+    display: flex; align-items: center; gap: 0.5rem;
+  }
+  .cpage-back:hover { border-color: var(--accent); color: var(--accent); }
+
+  .cpage-content {
+    position: relative; z-index: 1;
+    display: grid; grid-template-columns: 1fr 1fr;
+    gap: 6rem; align-items: start;
+    padding: 5rem 4rem;
+    max-width: 1200px; margin: 0 auto; width: 100%;
+  }
+  .cpage-left {}
+  .cpage-ref-tag {
+    display: inline-flex; align-items: center; gap: 0.5rem;
+    background: rgba(0,229,160,0.08); border: 1px solid rgba(0,229,160,0.2);
+    color: var(--accent); padding: 0.35rem 1rem;
+    font-size: 0.65rem; font-weight: 700; letter-spacing: 3px; text-transform: uppercase;
+    margin-bottom: 1.5rem;
+  }
+  .cpage-ref-tag::before { content:''; width:5px; height:5px; background:var(--accent); border-radius:50%; }
+  .cpage-title {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: clamp(3rem, 6vw, 5.5rem);
+    line-height: 0.95; letter-spacing: -1px; margin-bottom: 1.5rem;
+  }
+  .cpage-title .acc { color: var(--accent); }
+  .cpage-subtitle {
+    color: var(--muted); font-size: 1rem; line-height: 1.8; margin-bottom: 3rem;
+  }
+  .cpage-project-ref {
+    background: var(--card); border: 1px solid rgba(0,229,160,0.15);
+    padding: 1.2rem 1.5rem;
+    display: flex; align-items: center; gap: 1rem; margin-bottom: 2rem;
+    clip-path: polygon(0 0, calc(100% - 10px) 0, 100% 10px, 100% 100%, 10px 100%, 0 calc(100% - 10px));
+  }
+  .cpage-project-dot { width: 8px; height: 8px; background: var(--accent); border-radius: 50%; flex-shrink: 0; }
+  .cpage-project-label { font-size: 0.65rem; letter-spacing: 2px; text-transform: uppercase; color: var(--muted); display: block; margin-bottom: 0.2rem; }
+  .cpage-project-name { font-family: 'Bebas Neue', sans-serif; font-size: 1.1rem; letter-spacing: 2px; color: var(--text); }
+  .cpage-contact-items { display: flex; flex-direction: column; gap: 1rem; }
+  .cpage-contact-item {
+    display: flex; align-items: center; gap: 1rem;
+    padding: 1rem 1.2rem; border: 1px solid var(--border);
+    background: rgba(255,255,255,0.02); transition: all 0.3s;
+  }
+  .cpage-contact-item:hover { border-color: var(--accent); transform: translateX(4px); }
+  .cpage-contact-icon { color: var(--accent); font-size: 1.1rem; }
+  .cpage-contact-lbl { font-size: 0.6rem; letter-spacing: 2px; text-transform: uppercase; color: var(--muted); display: block; }
+  .cpage-contact-val { font-size: 0.85rem; font-weight: 600; color: var(--text); }
+
+  .cpage-form { display: flex; flex-direction: column; gap: 1.2rem; }
+  .cpage-form-title {
+    font-family: 'Bebas Neue', sans-serif; font-size: 1.8rem; letter-spacing: 2px;
+    margin-bottom: 0.5rem;
+  }
+  .cpage-form-sub { font-size: 0.8rem; color: var(--muted); letter-spacing: 1px; margin-bottom: 1rem; }
+  .cpage-input, .cpage-textarea, .cpage-select {
+    width: 100%; background: var(--card); border: 1px solid var(--border);
+    color: var(--text); padding: 1.1rem 1.4rem;
+    font-family: 'Syne', sans-serif; font-size: 0.9rem; font-weight: 400;
+    outline: none; transition: all 0.3s;
+    clip-path: polygon(0 0, calc(100% - 10px) 0, 100% 10px, 100% 100%, 10px 100%, 0 calc(100% - 10px));
+    resize: none; appearance: none;
+  }
+  .cpage-input::placeholder, .cpage-textarea::placeholder { color: var(--muted); }
+  .cpage-input:focus, .cpage-textarea:focus, .cpage-select:focus { border-color: var(--accent); }
+  .cpage-select option { background: var(--card); color: var(--text); }
+  .cpage-textarea { min-height: 130px; }
+  .cpage-row { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }
+  .cpage-submit {
+    background: var(--accent); color: var(--black); border: none;
+    padding: 1.2rem 2.5rem; font-family: 'Syne', sans-serif;
+    font-size: 0.85rem; font-weight: 700; letter-spacing: 3px; text-transform: uppercase;
+    cursor: pointer; transition: all 0.3s; width: 100%;
+    clip-path: polygon(0 0, calc(100% - 12px) 0, 100% 12px, 100% 100%, 12px 100%, 0 calc(100% - 12px));
+    display: flex; align-items: center; justify-content: center; gap: 0.8rem;
+    margin-top: 0.5rem;
+  }
+  .cpage-submit:hover { background: var(--accent2); color: white; transform: translateY(-2px); }
+  .cpage-success {
+    display: none; text-align: center; padding: 3rem 2rem;
+    border: 1px solid rgba(0,229,160,0.2); background: rgba(0,229,160,0.05);
+    clip-path: polygon(0 0, calc(100% - 14px) 0, 100% 14px, 100% 100%, 14px 100%, 0 calc(100% - 14px));
+  }
+  .cpage-success-icon { font-size: 3rem; margin-bottom: 1rem; display: block; }
+  .cpage-success-title { font-family: 'Bebas Neue', sans-serif; font-size: 2rem; letter-spacing: 3px; color: var(--accent); margin-bottom: 0.5rem; }
+  .cpage-success-text { color: var(--muted); font-size: 0.9rem; line-height: 1.7; }
+
+  @media (max-width: 900px) {
+    .cpage-content { grid-template-columns: 1fr; gap: 3rem; padding: 3rem 1.5rem; }
+    .cpage-header { padding: 1.2rem 1.5rem; }
+    .cpage-row { grid-template-columns: 1fr; }
+  }
+</style>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+</head>
+<body>
+
+<div class="cursor" id="cursor"></div>
+<div class="cursor-ring" id="cursor-ring"></div>
+
+<!-- NAV -->
+<nav id="navbar">
+  <a href="#hero" class="nav-logo">DP<span>.</span></a>
+  <ul class="nav-links">
+    <li><a href="#about">Sobre</a></li>
+    <li><a href="#services">Serviços</a></li>
+    <li><a href="#portfolio">Portfolio</a></li>
+    <li><a href="#skills">Skills</a></li>
+    <li><a href="#contact">Contato</a></li>
+  </ul>
+  <a href="/cdn-cgi/l/email-protection#02666b67656d60676c67746b66677165616f42656f636b6e2c616d6f" class="nav-cta">Hire Me</a>
+</nav>
+
+<!-- HERO -->
+<section id="hero">
+  <div class="hero-bg"></div>
+  <div class="hero-noise"></div>
+  <div class="hero-grid"></div>
+
+  <div class="hero-content">
+    <div class="hero-tag">Disponível para projetos</div>
+    <h1 class="hero-name">
+      <span class="line1">Diego</span>
+      <span class="line2"><span class="accent-word">Pinheiro</span></span>
+    </h1>
+    <div class="hero-sub">
+      <p class="hero-desc">
+        Designer Gráfico & Especialista em Modelagem 3D com mais de <strong style="color:var(--text)">5 anos</strong> de experiência criando identidades visuais impactantes e modelos tridimensionais de alta qualidade.
+      </p>
+    </div>
+    <div class="hero-btns">
+      <a href="#portfolio" class="btn-primary">Ver Portfolio →</a>
+      <a href="/cdn-cgi/l/email-protection#3d5954585a525f5853584b5459584e5a5e507d5a505c5451135e5250" class="btn-outline">Fale Comigo</a>
+    </div>
+  </div>
+
+  <div class="hero-stats">
+    <div class="stat-item">
+      <div class="stat-num">40+</div>
+      <div class="stat-label">Marcas Criadas</div>
+    </div>
+    <div class="stat-item">
+      <div class="stat-num">5+</div>
+      <div class="stat-label">Anos Exp.</div>
+    </div>
+    <div class="stat-item">
+      <div class="stat-num">3</div>
+      <div class="stat-label">Empresas</div>
+    </div>
+  </div>
+
+  <div class="scroll-indicator">
+    <div class="scroll-line"></div>
+    <span class="scroll-text">Scroll</span>
+  </div>
+</section>
+
+<!-- MARQUEE -->
+<div class="marquee-wrap">
+  <div class="marquee-track">
+    <div class="marquee-item"><span class="marquee-dot"></span>Design Gráfico</div>
+    <div class="marquee-item"><span class="marquee-dot"></span>Modelagem 3D</div>
+    <div class="marquee-item"><span class="marquee-dot"></span>Identidade Visual</div>
+    <div class="marquee-item"><span class="marquee-dot"></span>Branding</div>
+    <div class="marquee-item"><span class="marquee-dot"></span>Adobe Photoshop</div>
+    <div class="marquee-item"><span class="marquee-dot"></span>Blender</div>
+    <div class="marquee-item"><span class="marquee-dot"></span>Cinema 4D</div>
+    <div class="marquee-item"><span class="marquee-dot"></span>Renderização 3D</div>
+    <div class="marquee-item"><span class="marquee-dot"></span>Motion Graphics</div>
+    <div class="marquee-item"><span class="marquee-dot"></span>Design Gráfico</div>
+    <div class="marquee-item"><span class="marquee-dot"></span>Modelagem 3D</div>
+    <div class="marquee-item"><span class="marquee-dot"></span>Identidade Visual</div>
+    <div class="marquee-item"><span class="marquee-dot"></span>Branding</div>
+    <div class="marquee-item"><span class="marquee-dot"></span>Adobe Photoshop</div>
+    <div class="marquee-item"><span class="marquee-dot"></span>Blender</div>
+    <div class="marquee-item"><span class="marquee-dot"></span>Cinema 4D</div>
+    <div class="marquee-item"><span class="marquee-dot"></span>Renderização 3D</div>
+    <div class="marquee-item"><span class="marquee-dot"></span>Motion Graphics</div>
+  </div>
+</div>
+
+<!-- ABOUT -->
+<section id="about">
+  <div class="about-visual reveal">
+    <div class="about-img-frame">
+      <div class="about-img-inner">
+        <div class="about-avatar">DP</div>
+      </div>
+    </div>
+    <div class="about-badge">
+      <div class="about-badge-num">5+</div>
+      <div class="about-badge-label">Anos de<br>Experiência</div>
+    </div>
+    <div class="about-accent-line"></div>
+  </div>
+
+  <div class="about-text">
+    <div class="section-eyebrow reveal">Sobre Mim</div>
+    <h2 class="section-title reveal reveal-delay-1">Criando <span class="highlight">Visuais</span><br>Que Impactam</h2>
+    <p class="about-bio reveal reveal-delay-2">
+      Designer gráfico e modelador 3D com mais de 5 anos de experiência criando identidades visuais, materiais de marketing e modelos tridimensionais de alta qualidade para clientes em diversas áreas. Especializado em transformar conceitos em produtos visuais impactantes, com foco em entrega no prazo e resultado acima das expectativas.
+    </p>
+    <p class="about-bio reveal reveal-delay-2">
+      Atuo em projetos nacionais e internacionais, com comunicação fluente em inglês, entregando desde branding completo até animações 3D e visualizações arquitetônicas.
+    </p>
+    <div class="skills-grid reveal reveal-delay-3">
+      <div class="skill-pill">Adobe Photoshop</div>
+      <div class="skill-pill">Adobe Illustrator</div>
+      <div class="skill-pill">Blender</div>
+      <div class="skill-pill">Cinema 4D</div>
+      <div class="skill-pill">ZBrush</div>
+      <div class="skill-pill">Adobe After Effects</div>
+      <div class="skill-pill">Figma / UI Design</div>
+      <div class="skill-pill">Adobe InDesign</div>
+    </div>
+  </div>
+</section>
+
+<!-- SERVICES -->
+<section id="services">
+  <div class="section-header">
+    <div class="section-eyebrow reveal">O que eu faço</div>
+    <h2 class="section-title reveal reveal-delay-1">Meus <span class="highlight">Serviços</span></h2>
+  </div>
+  <div class="services-grid">
+    <div class="service-card reveal">
+      <div class="service-num">01 —</div>
+      <div class="service-icon">◈</div>
+      <h3 class="service-title">Identidade Visual</h3>
+      <p class="service-desc">Criação de identidade visual completa para marcas: logotipo, paleta de cores, tipografia e manual de marca. Mais de 40 marcas desenvolvidas com excelência.</p>
+      <div class="service-tags">
+        <span class="service-tag">Logo</span>
+        <span class="service-tag">Branding</span>
+        <span class="service-tag">Manual</span>
+      </div>
+    </div>
+    <div class="service-card reveal reveal-delay-1">
+      <div class="service-num">02 —</div>
+      <div class="service-icon">▣</div>
+      <h3 class="service-title">Design Gráfico</h3>
+      <p class="service-desc">Desenvolvimento de materiais gráficos: banners, cartazes, flyers, embalagens, posts para redes sociais, editoriais, catálogos e e-books com alta qualidade visual.</p>
+      <div class="service-tags">
+        <span class="service-tag">Print</span>
+        <span class="service-tag">Digital</span>
+        <span class="service-tag">Social</span>
+      </div>
+    </div>
+    <div class="service-card reveal reveal-delay-2">
+      <div class="service-num">03 —</div>
+      <div class="service-icon">◬</div>
+      <h3 class="service-title">Modelagem 3D</h3>
+      <p class="service-desc">Modelagem 3D de produtos, personagens e cenários para jogos e publicidade. Texturização, iluminação e renderização fotorrealista com Blender e Cinema 4D.</p>
+      <div class="service-tags">
+        <span class="service-tag">Blender</span>
+        <span class="service-tag">Cinema 4D</span>
+        <span class="service-tag">ZBrush</span>
+      </div>
+    </div>
+    <div class="service-card reveal">
+      <div class="service-num">04 —</div>
+      <div class="service-icon">⬡</div>
+      <h3 class="service-title">Motion Graphics</h3>
+      <p class="service-desc">Criação de animações 3D para vídeos institucionais e campanhas digitais. Experiência em motion graphics e efeitos visuais com After Effects e Cinema 4D.</p>
+      <div class="service-tags">
+        <span class="service-tag">After Effects</span>
+        <span class="service-tag">Animação</span>
+        <span class="service-tag">VFX</span>
+      </div>
+    </div>
+    <div class="service-card reveal reveal-delay-1">
+      <div class="service-num">05 —</div>
+      <div class="service-icon">◉</div>
+      <h3 class="service-title">UI / UX Design</h3>
+      <p class="service-desc">Criação de interfaces digitais modernas e intuitivas com Figma. Design centrado no usuário com foco em usabilidade, estética e consistência visual.</p>
+      <div class="service-tags">
+        <span class="service-tag">Figma</span>
+        <span class="service-tag">Prototipagem</span>
+        <span class="service-tag">UI Design</span>
+      </div>
+    </div>
+    <div class="service-card reveal reveal-delay-2">
+      <div class="service-num">06 —</div>
+      <div class="service-icon">⬢</div>
+      <h3 class="service-title">Visualização Arq.</h3>
+      <p class="service-desc">Colaboração com equipes de arquitetura e engenharia para criação de visualizações arquitetônicas fotorrealistas e renders de alta qualidade para apresentações.</p>
+      <div class="service-tags">
+        <span class="service-tag">V-Ray</span>
+        <span class="service-tag">Cycles</span>
+        <span class="service-tag">Arquitetura</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- EXPERIENCE -->
+<section id="experience">
+  <div class="exp-layout">
+    <div class="exp-nav">
+      <div class="section-eyebrow reveal">Trajetória</div>
+      <h2 class="section-title reveal reveal-delay-1">Minha<br><span class="highlight">Experiência</span></h2>
+      <div style="margin-top:3rem">
+        <div class="exp-nav-item active reveal reveal-delay-2">Freelancer</div>
+        <div class="exp-nav-item reveal reveal-delay-2">Studio Forma 3D</div>
+        <div class="exp-nav-item reveal reveal-delay-2">Pixel&Co</div>
+      </div>
+    </div>
+    <div class="exp-cards">
+      <div class="exp-card reveal">
+        <div class="exp-card-year">2020 — Presente</div>
+        <h3 class="exp-card-title">Designer Gráfico Freelancer</h3>
+        <div class="exp-card-company">Autônomo — Projetos Nacionais e Internacionais</div>
+        <ul class="exp-bullets">
+          <li>Criação de identidade visual completa para mais de 40 marcas (logo, paleta de cores, tipografia e manual de marca).</li>
+          <li>Desenvolvimento de materiais gráficos: banners, cartazes, flyers, embalagens e posts para redes sociais.</li>
+          <li>Edição e diagramação de materiais editoriais, catálogos e e-books.</li>
+          <li>Atendimento a clientes internacionais com comunicação fluente em inglês.</li>
+        </ul>
+      </div>
+      <div class="exp-card reveal reveal-delay-1">
+        <div class="exp-card-year">2018 — 2020</div>
+        <h3 class="exp-card-title">Especialista em Modelagem 3D</h3>
+        <div class="exp-card-company">Studio Forma 3D — São Paulo, SP</div>
+        <ul class="exp-bullets">
+          <li>Modelagem 3D de produtos industriais, personagens e cenários para jogos e publicidade.</li>
+          <li>Texturização, iluminação e renderização fotorrealista usando Blender e Cinema 4D.</li>
+          <li>Criação de animações 3D para vídeos institucionais e campanhas digitais.</li>
+          <li>Colaboração com equipes multidisciplinares de arquitetura e engenharia para visualizações arquitetônicas.</li>
+        </ul>
+      </div>
+      <div class="exp-card reveal reveal-delay-2">
+        <div class="exp-card-year">2016 — 2018</div>
+        <h3 class="exp-card-title">Assistente de Design</h3>
+        <div class="exp-card-company">Agência Criativa Pixel&Co — Rio de Janeiro, RJ</div>
+        <ul class="exp-bullets">
+          <li>Suporte à equipe de criação no desenvolvimento de campanhas publicitárias para clientes de médio e grande porte.</li>
+          <li>Produção de artes para mídia impressa e digital com foco em qualidade e consistência visual.</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- PORTFOLIO -->
+<section id="portfolio">
+  <div class="section-header">
+    <div class="section-eyebrow reveal">Trabalhos</div>
+    <h2 class="section-title reveal reveal-delay-1">Portfolio <span class="highlight">Selecionado</span></h2>
+  </div>
+  <div class="filter-bar reveal">
+    <button class="filter-btn active" data-filter="all">Todos</button>
+    <button class="filter-btn" data-filter="branding">Branding</button>
+    <button class="filter-btn" data-filter="3d">3D</button>
+    <button class="filter-btn" data-filter="motion">Motion</button>
+    <button class="filter-btn" data-filter="uiux">UI/UX</button>
+  </div>
+  <div class="portfolio-grid">
+    <div class="portfolio-item reveal" data-project="branding1" data-cat="branding">
+      <div class="portfolio-bg" style="background: linear-gradient(135deg, #0a1628, #1a2a4a); font-size:6rem; color:rgba(0,229,160,0.15); letter-spacing:5px;">◈◈◈</div>
+      <div class="portfolio-overlay">
+        <div class="portfolio-cat">Branding</div>
+        <div class="portfolio-name">Identidade Visual Tech</div>
+      </div>
+      <div class="portfolio-arrow">→</div>
+    </div>
+    <div class="portfolio-item reveal reveal-delay-1" data-project="3d1" data-cat="3d">
+      <div class="portfolio-bg" style="background: linear-gradient(135deg, #1a0a2e, #2a1a4a); font-size:5rem; color:rgba(123,92,250,0.2);">▣◬▣</div>
+      <div class="portfolio-overlay">
+        <div class="portfolio-cat">Modelagem 3D</div>
+        <div class="portfolio-name">Produto Industrial</div>
+      </div>
+      <div class="portfolio-arrow">→</div>
+    </div>
+    <div class="portfolio-item reveal reveal-delay-2" data-project="motion1" data-cat="motion">
+      <div class="portfolio-bg" style="background: linear-gradient(135deg, #280a14, #3a1020); font-size:4rem; color:rgba(255,77,109,0.2);">⬡⬢⬡</div>
+      <div class="portfolio-overlay">
+        <div class="portfolio-cat">Motion Graphics</div>
+        <div class="portfolio-name">Campanha Digital</div>
+      </div>
+      <div class="portfolio-arrow">→</div>
+    </div>
+    <div class="portfolio-item reveal" data-project="uiux1" data-cat="uiux">
+      <div class="portfolio-bg" style="background: linear-gradient(135deg, #081a10, #0f2a1a); font-size:8rem; color:rgba(0,229,160,0.1); letter-spacing:20px;">DP</div>
+      <div class="portfolio-overlay">
+        <div class="portfolio-cat">UI/UX Design</div>
+        <div class="portfolio-name">App de Gestão</div>
+      </div>
+      <div class="portfolio-arrow">→</div>
+    </div>
+    <div class="portfolio-item reveal reveal-delay-1" data-project="3d2" data-cat="3d">
+      <div class="portfolio-bg" style="background: linear-gradient(135deg, #1a1208, #2a1e0a); font-size:5rem; color:rgba(255,200,0,0.15);">◉◉◉</div>
+      <div class="portfolio-overlay">
+        <div class="portfolio-cat">Visualização 3D</div>
+        <div class="portfolio-name">Render Arquitetônico</div>
+      </div>
+      <div class="portfolio-arrow">→</div>
+    </div>
+    <div class="portfolio-item reveal reveal-delay-2" data-project="branding2" data-cat="branding">
+      <div class="portfolio-bg" style="background: linear-gradient(135deg, #0a0a1a, #1a1a2e); font-size:4rem; color:rgba(123,92,250,0.2);">⬢⬡⬢</div>
+      <div class="portfolio-overlay">
+        <div class="portfolio-cat">Branding</div>
+        <div class="portfolio-name">Manual de Marca</div>
+      </div>
+      <div class="portfolio-arrow">→</div>
+    </div>
+  </div>
+</section>
+
+<!-- CONTACT PAGE OVERLAY -->
+<div id="contact-page" class="cpage-overlay">
+  <div class="cpage-bg"></div>
+  <div class="cpage-grid"></div>
+  <div class="cpage-inner">
+    <div class="cpage-header">
+      <div class="cpage-logo">DP<span>.</span></div>
+      <button class="cpage-back" onclick="closeContactPage()">← Voltar</button>
+    </div>
+    <div class="cpage-content">
+      <div class="cpage-left">
+        <div class="cpage-ref-tag">Interesse em Projeto</div>
+        <h2 class="cpage-title">Vamos<br>Criar<br><span class="acc">Juntos?</span></h2>
+        <p class="cpage-subtitle">Preencha o formulário com suas informações e os detalhes do projeto. Responderei em até 24 horas.</p>
+        <div class="cpage-project-ref" id="cpage-project-ref">
+          <div class="cpage-project-dot"></div>
+          <div>
+            <span class="cpage-project-label">Projeto de Interesse</span>
+            <div class="cpage-project-name" id="cpage-project-name">—</div>
+          </div>
+        </div>
+        <div class="cpage-contact-items">
+          <div class="cpage-contact-item">
+            <div class="cpage-contact-icon">✉</div>
+            <div>
+              <span class="cpage-contact-lbl">Email</span>
+              <span class="cpage-contact-val">diegopinheiro.design@gmail.com</span>
+            </div>
+          </div>
+          <div class="cpage-contact-item">
+            <div class="cpage-contact-icon">📍</div>
+            <div>
+              <span class="cpage-contact-lbl">Localização</span>
+              <span class="cpage-contact-val">São Paulo, SP — Brasil</span>
+            </div>
+          </div>
+          <div class="cpage-contact-item">
+            <div class="cpage-contact-icon">⏱</div>
+            <div>
+              <span class="cpage-contact-lbl">Resposta em</span>
+              <span class="cpage-contact-val">Até 24 horas</span>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div>
+        <div class="cpage-form" id="cpage-form">
+          <div class="cpage-form-title">Suas Informações</div>
+          <p class="cpage-form-sub">Preencha os campos para melhor atendimento.</p>
+          <div class="cpage-row">
+            <input type="text" class="cpage-input" id="cf-name" placeholder="Seu Nome">
+            <input type="text" class="cpage-input" id="cf-empresa" placeholder="Empresa / Marca">
+          </div>
+          <form
+  action="https://formspree.io/f/mjgjkrjo"
+  method="POST"
+  >
+          <input type="email" class="cpage-input" id="cf-email" placeholder="Seu Email">
+          <input type="tel" class="cpage-input" id="cf-phone" placeholder="Telefone / WhatsApp">
+          <select class="cpage-select" id="cf-servico">
+            <option value="" disabled selected>Tipo de Serviço</option>
+            <option>Identidade Visual / Branding</option>
+            <option>Modelagem 3D</option>
+            <option>Visualização Arquitetônica</option>
+            <option>UI/UX Design</option>
+            <option>Motion Graphics</option>
+            <option>Manual de Marca</option>
+            <option>Outro</option>
+          </select>
+          <select class="cpage-select" id="cf-orcamento">
+            <option value="" disabled selected>Orçamento Estimado</option>
+            <option>Até R$ 1.000</option>
+            <option>R$ 1.000 – R$ 3.000</option>
+            <option>R$ 3.000 – R$ 8.000</option>
+            <option>Acima de R$ 8.000</option>
+            <option>A combinar</option>
+          </select>
+          <textarea class="cpage-textarea" id="cf-msg" placeholder="Descreva seu projeto: objetivos, prazos, referências visuais e qualquer detalhe relevante..."></textarea>
+          <button class="cpage-submit" onclick="submitContactForm()">Enviar Mensagem →</button>
+        </div>
+        <div class="cpage-success" id="cpage-success">
+          <span class="cpage-success-icon">✦</span>
+          <div class="cpage-success-title">Mensagem Enviada!</div>
+          <p class="cpage-success-text">Obrigado pelo contato. Analisarei seu projeto e responderei em até 24 horas no email informado.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- PROJECT MODAL -->
+<div id="project-modal" class="pmodal-overlay">
+  <div class="pmodal-container">
+    <button class="pmodal-close" id="modal-close">✕</button>
+    <div class="pmodal-inner">
+      <div class="pmodal-preview" id="modal-preview"></div>
+      <div class="pmodal-info" id="modal-info"></div>
+    </div>
+  </div>
+</div>
+
+<!-- SKILLS -->
+<section id="skills">
+  <div class="section-header">
+    <div class="section-eyebrow reveal">Competências</div>
+    <h2 class="section-title reveal reveal-delay-1">Skills &amp; <span class="highlight">Ferramentas</span></h2>
+  </div>
+  <div class="skills-main">
+    <div>
+      <div class="skill-category reveal">
+        <div class="skill-cat-title">Design Gráfico</div>
+        <div class="skill-bars">
+          <div class="skill-bar-item">
+            <div class="skill-bar-header"><span class="skill-bar-name">Adobe Photoshop</span><span class="skill-bar-pct">95%</span></div>
+            <div class="skill-bar-track"><div class="skill-bar-fill" style="--w:0.95"></div></div>
+          </div>
+          <div class="skill-bar-item">
+            <div class="skill-bar-header"><span class="skill-bar-name">Adobe Illustrator</span><span class="skill-bar-pct">92%</span></div>
+            <div class="skill-bar-track"><div class="skill-bar-fill" style="--w:0.92"></div></div>
+          </div>
+          <div class="skill-bar-item">
+            <div class="skill-bar-header"><span class="skill-bar-name">Adobe InDesign</span><span class="skill-bar-pct">88%</span></div>
+            <div class="skill-bar-track"><div class="skill-bar-fill" style="--w:0.88"></div></div>
+          </div>
+          <div class="skill-bar-item">
+            <div class="skill-bar-header"><span class="skill-bar-name">Figma</span><span class="skill-bar-pct">80%</span></div>
+            <div class="skill-bar-track"><div class="skill-bar-fill" style="--w:0.80"></div></div>
+          </div>
+        </div>
+      </div>
+      <div class="skill-category reveal reveal-delay-1" style="margin-top:2.5rem">
+        <div class="skill-cat-title">Modelagem 3D</div>
+        <div class="skill-bars">
+          <div class="skill-bar-item">
+            <div class="skill-bar-header"><span class="skill-bar-name">Blender</span><span class="skill-bar-pct">93%</span></div>
+            <div class="skill-bar-track"><div class="skill-bar-fill" style="--w:0.93"></div></div>
+          </div>
+          <div class="skill-bar-item">
+            <div class="skill-bar-header"><span class="skill-bar-name">Cinema 4D</span><span class="skill-bar-pct">88%</span></div>
+            <div class="skill-bar-track"><div class="skill-bar-fill" style="--w:0.88"></div></div>
+          </div>
+          <div class="skill-bar-item">
+            <div class="skill-bar-header"><span class="skill-bar-name">ZBrush</span><span class="skill-bar-pct">75%</span></div>
+            <div class="skill-bar-track"><div class="skill-bar-fill" style="--w:0.75"></div></div>
+          </div>
+          <div class="skill-bar-item">
+            <div class="skill-bar-header"><span class="skill-bar-name">V-Ray / Cycles</span><span class="skill-bar-pct">85%</span></div>
+            <div class="skill-bar-track"><div class="skill-bar-fill" style="--w:0.85"></div></div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="tools-section reveal reveal-delay-2">
+      <div class="skill-cat-title">Ferramentas & Softwares</div>
+      <div class="tools-grid">
+        <div class="tool-card"><span class="tool-icon">🎨</span><div class="tool-name">Photoshop</div></div>
+        <div class="tool-card"><span class="tool-icon">✏️</span><div class="tool-name">Illustrator</div></div>
+        <div class="tool-card"><span class="tool-icon">📐</span><div class="tool-name">InDesign</div></div>
+        <div class="tool-card"><span class="tool-icon">🎬</span><div class="tool-name">After Effects</div></div>
+        <div class="tool-card"><span class="tool-icon">◬</span><div class="tool-name">Blender</div></div>
+        <div class="tool-card"><span class="tool-icon">⬢</span><div class="tool-name">Cinema 4D</div></div>
+        <div class="tool-card"><span class="tool-icon">◉</span><div class="tool-name">ZBrush</div></div>
+        <div class="tool-card"><span class="tool-icon">🖥</span><div class="tool-name">Figma</div></div>
+        <div class="tool-card"><span class="tool-icon">📊</span><div class="tool-name">Canva Pro</div></div>
+        <div class="tool-card"><span class="tool-icon">🌐</span><div class="tool-name">V-Ray</div></div>
+        <div class="tool-card"><span class="tool-icon">💡</span><div class="tool-name">Cycles</div></div>
+        <div class="tool-card"><span class="tool-icon">📁</span><div class="tool-name">Office</div></div>
+      </div>
+      <div style="margin-top:3rem; padding:2rem; border:1px solid var(--border); background:var(--card);">
+        <div class="section-eyebrow" style="margin-bottom:1rem">Idiomas</div>
+        <div style="display:flex; flex-direction:column; gap:1rem">
+          <div>
+            <div class="skill-bar-header" style="margin-bottom:0.5rem">
+              <span class="skill-bar-name">🇧🇷 Português</span>
+              <span class="skill-bar-pct" style="color:var(--text)">Nativo</span>
+            </div>
+            <div class="skill-bar-track"><div class="skill-bar-fill" style="--w:1; background:var(--accent)"></div></div>
+          </div>
+          <div>
+            <div class="skill-bar-header" style="margin-bottom:0.5rem">
+              <span class="skill-bar-name">🇺🇸 Inglês</span>
+              <span class="skill-bar-pct" style="color:var(--text)">Avançado</span>
+            </div>
+            <div class="skill-bar-track"><div class="skill-bar-fill" style="--w:0.85; background:var(--accent2)"></div></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- CONTACT -->
+<section id="contact">
+  <div class="contact-glow"></div>
+  <div class="contact-layout">
+    <div class="contact-left">
+      <div class="section-eyebrow reveal">Contato</div>
+      <h2 class="contact-big reveal reveal-delay-1">Vamos<br>Criar<br><span class="accent">Algo</span><br>Juntos?</h2>
+      <p class="about-bio reveal reveal-delay-2">Aberto a projetos freelancer, colaborações e novos desafios. Entre em contato e vamos transformar sua ideia em realidade.</p>
+      <div class="contact-info reveal reveal-delay-2">
+        <div class="contact-info-item">
+          <div class="contact-info-icon">✉</div>
+          <div class="contact-info-text">
+            <span class="contact-info-label">Email</span>
+            <a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="64000d01030b06010a01120d000117030709240309050d084a070b09">[email&#160;protected]</a>
+          </div>
+        </div>
+        <div class="contact-info-item">
+          <div class="contact-info-icon">📍</div>
+          <div class="contact-info-text">
+            <span class="contact-info-label">Localização</span>
+            São Paulo, SP — Brasil
+          </div>
+        </div>
+        <div class="contact-info-item">
+          <div class="contact-info-icon">🌐</div>
+          <div class="contact-info-text">
+            <span class="contact-info-label">Idiomas</span>
+            Português (Nativo) · Inglês (Avançado)
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="reveal reveal-delay-2">
+      <form action="https://formspree.io/f/mjgjkrjo" method="POST">
+  <input type="text" name="nome" class="form-input" placeholder="Seu Nome">
+  <input type="email" name="email" class="form-input" placeholder="Seu Email">
+  <input type="text" name="assunto" class="form-input" placeholder="Assunto / Serviço">
+  <textarea name="mensagem" class="form-textarea" placeholder="Me conte sobre o seu projeto..."></textarea>
+  <button type="submit" class="form-submit">Enviar Mensagem →</button>
+</form>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <div class="footer-logo">Diego Pinheiro</div>
+  <div class="footer-text">© 2025 Diego Pinheiro · Designer Gráfico & Especialista 3D</div>
+  <div class="footer-social">
+    <a href="#" class="social-btn">in</a>
+    <a href="#" class="social-btn">Be</a>
+    <a href="#" class="social-btn">ig</a>
+  </div>
+</footer>
+
+<script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script>
+  // CURSOR
+  const cursor = document.getElementById('cursor');
+  const ring = document.getElementById('cursor-ring');
+  let mx = 0, my = 0, rx = 0, ry = 0;
+  document.addEventListener('mousemove', e => { mx = e.clientX; my = e.clientY; });
+  function animCursor() {
+    cursor.style.left = mx + 'px'; cursor.style.top = my + 'px';
+    rx += (mx - rx) * 0.12; ry += (my - ry) * 0.12;
+    ring.style.left = rx + 'px'; ring.style.top = ry + 'px';
+    requestAnimationFrame(animCursor);
+  }
+  animCursor();
+
+  // REVEAL ON SCROLL
+  const revealEls = document.querySelectorAll('.reveal');
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach(e => { if(e.isIntersecting) e.target.classList.add('visible'); });
+  }, { threshold: 0.1 });
+  revealEls.forEach(el => observer.observe(el));
+
+  // SKILL BARS
+  const skillBarsObserver = new IntersectionObserver((entries) => {
+    entries.forEach(e => {
+      if(e.isIntersecting) {
+        e.target.querySelectorAll('.skill-bar-fill').forEach((bar, i) => {
+          const w = parseFloat(bar.style.getPropertyValue('--w') || bar.style.cssText.match(/--w:([\d.]+)/)?.[1] || 0.5);
+          setTimeout(() => {
+            bar.style.transformOrigin = 'left';
+            bar.style.transform = `scaleX(${w})`;
+          }, i * 150);
+        });
+      }
+    });
+  }, { threshold: 0.3 });
+  document.querySelectorAll('.skill-category, .tools-section > div').forEach(el => skillBarsObserver.observe(el));
+
+  // FILTER BUTTONS
+  document.querySelectorAll('.filter-btn').forEach(btn => {
+    btn.addEventListener('click', () => {
+      document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+    });
+  });
+
+  // NAV SCROLL
+  window.addEventListener('scroll', () => {
+    const nav = document.getElementById('navbar');
+    nav.style.background = window.scrollY > 50 ? 'rgba(6,6,8,0.95)' : 'rgba(6,6,8,0.7)';
+  });
+
+  // SKILL BAR INIT - trigger visible ones
+  document.querySelectorAll('.skill-bar-fill').forEach(bar => {
+    const cssText = bar.getAttribute('style') || '';
+    const match = cssText.match(/--w:([\d.]+)/);
+    if(match) bar.dataset.w = match[1];
+  });
+
+  // Re-trigger on scroll
+  const skillObs = new IntersectionObserver((entries) => {
+    entries.forEach(e => {
+      if(e.isIntersecting) {
+        const bars = e.target.querySelectorAll('.skill-bar-fill');
+        bars.forEach((bar, i) => {
+          const w = bar.dataset.w || 0.8;
+          setTimeout(() => { bar.style.transform = `scaleX(${w})`; }, i * 120 + 200);
+        });
+      }
+    });
+  }, { threshold: 0.2 });
+  document.querySelectorAll('#skills').forEach(s => skillObs.observe(s));
+
+  // Animate all bars on load if visible
+  setTimeout(() => {}, 500);
+
+  // ===== FILTER BUTTONS =====
+  document.querySelectorAll('.filter-btn').forEach(btn => {
+    btn.addEventListener('click', () => {
+      document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+      const filter = btn.dataset.filter;
+      document.querySelectorAll('.portfolio-item').forEach(item => {
+        const cat = item.dataset.cat;
+        if (filter === 'all' || cat === filter) {
+          item.style.opacity = '1'; item.style.transform = '';
+        } else {
+          item.style.opacity = '0.2'; item.style.transform = 'scale(0.95)';
+        }
+      });
+    });
+  });
+
+  // ===== PROJECT DATA =====
+  const projects = {
+    branding1: {
+      cat: 'Branding', title: 'Identidade Visual Tech',
+      desc: 'Desenvolvimento completo de identidade visual para startup de tecnologia. Incluindo logotipo, paleta de cores, tipografia, papelaria, mockups e manual da marca.',
+      tags: ['Logo Design','Brand Identity','Adobe Illustrator','Photoshop','Brand Manual'],
+      year: '2023', client: 'TechStart Ltda', duration: '3 semanas',
+      type: 'branding'
+    },
+    '3d1': {
+      cat: 'Modelagem 3D', title: 'Produto Industrial',
+      desc: 'Modelagem 3D fotorrealista de produto industrial para catálogo e apresentação comercial. Totalmente interativo — arraste para girar o modelo.',
+      tags: ['Blender','Cinema 4D','V-Ray','Modelagem','Texturização'],
+      year: '2023', client: 'Indústria MetalTec', duration: '2 semanas',
+      type: '3d_product'
+    },
+    motion1: {
+      cat: 'Motion Graphics', title: 'Campanha Digital',
+      desc: 'Criação de peças animadas para campanha de marketing digital em redes sociais. Animações fluidas e modernas com identidade visual impactante.',
+      tags: ['After Effects','Motion Graphics','Animation','Social Media','Digital'],
+      year: '2024', client: 'Agência Nova', duration: '1 semana',
+      type: 'motion'
+    },
+    uiux1: {
+      cat: 'UI/UX Design', title: 'App de Gestão',
+      desc: 'Design completo de interface para aplicativo mobile de gestão empresarial. Fluxo intuitivo, design system consistente e alta usabilidade.',
+      tags: ['Figma','UI Design','UX','Prototipagem','Design System'],
+      year: '2024', client: 'CorpFlow App', duration: '4 semanas',
+      type: 'uiux'
+    },
+    '3d2': {
+      cat: 'Visualização 3D', title: 'Render Arquitetônico',
+      desc: 'Visualização arquitetônica fotorrealista para apresentação de projeto residencial. Iluminação natural, materiais PBR e composição cuidadosa.',
+      tags: ['Blender','Cycles','Arquitetura','Render','Iluminação'],
+      year: '2023', client: 'Estúdio de Arquitetura', duration: '5 dias',
+      type: '3d_arch'
+    },
+    branding2: {
+      cat: 'Branding', title: 'Manual de Marca',
+      desc: 'Manual de identidade visual completo com 40 páginas. Regras de uso de logo, tipografia, paleta de cores, padrões gráficos e exemplos de aplicação.',
+      tags: ['InDesign','Brand Guidelines','Design Editorial','Tipografia'],
+      year: '2022', client: 'Rede de Varejo', duration: '2 semanas',
+      type: 'brand_manual'
+    }
+  };
+
+  // ===== MODAL =====
+  const modal = document.getElementById('project-modal');
+  const modalClose = document.getElementById('modal-close');
+  let activeRenderer = null;
+  let animFrameId = null;
+
+  function closeModal() {
+    modal.classList.remove('open');
+    document.body.style.overflow = '';
+    if (animFrameId) { cancelAnimationFrame(animFrameId); animFrameId = null; }
+    if (activeRenderer) { activeRenderer.dispose(); activeRenderer = null; }
+    setTimeout(() => {
+      document.getElementById('modal-preview').innerHTML = '';
+      document.getElementById('modal-info').innerHTML = '';
+    }, 400);
+  }
+
+  modalClose.addEventListener('click', closeModal);
+  modal.addEventListener('click', e => { if (e.target === modal) closeModal(); });
+  document.addEventListener('keydown', e => { if (e.key === 'Escape') closeModal(); });
+
+  document.querySelectorAll('.portfolio-item').forEach(item => {
+    item.addEventListener('click', () => {
+      const key = item.dataset.project;
+      const p = projects[key];
+      if (!p) return;
+      openProject(p);
+    });
+  });
+
+  function buildInfo(p) {
+    return `
+      <div class="pinfo-eyebrow">${p.cat}</div>
+      <div class="pinfo-title">${p.title}</div>
+      <p class="pinfo-desc">${p.desc}</p>
+      <div class="pinfo-tags">${p.tags.map(t => `<span class="pinfo-tag">${t}</span>`).join('')}</div>
+      <div class="pinfo-meta">
+        <div class="pinfo-meta-row"><span class="pinfo-meta-label">Ano</span><span class="pinfo-meta-val">${p.year}</span></div>
+        <div class="pinfo-meta-row"><span class="pinfo-meta-label">Cliente</span><span class="pinfo-meta-val">${p.client}</span></div>
+        <div class="pinfo-meta-row"><span class="pinfo-meta-label">Duração</span><span class="pinfo-meta-val">${p.duration}</span></div>
+      </div>
+      <button class="pinfo-cta" onclick="openContactPage('${p.title}')">Entre em Contato →</button>
+    `;
+  }
+
+  function openProject(p) {
+    const preview = document.getElementById('modal-preview');
+    const info = document.getElementById('modal-info');
+    info.innerHTML = buildInfo(p);
+    preview.innerHTML = '';
+    if (animFrameId) { cancelAnimationFrame(animFrameId); animFrameId = null; }
+    if (activeRenderer) { activeRenderer.dispose(); activeRenderer = null; }
+
+    if (p.type === '3d_product') buildThreeProduct(preview);
+    else if (p.type === '3d_arch') buildThreeArch(preview);
+    else if (p.type === 'uiux') buildUIUX(preview);
+    else if (p.type === 'motion') buildMotion(preview);
+    else if (p.type === 'branding') buildBranding(preview);
+    else if (p.type === 'brand_manual') buildBrandManual(preview);
+
+    modal.classList.add('open');
+    document.body.style.overflow = 'hidden';
+  }
+
+  // ===== 3D PRODUCT (rotating industrial gear-like object) =====
+  function buildThreeProduct(container) {
+    container.style.background = '#0a0a14';
+    const canvas = document.createElement('canvas');
+    canvas.id = 'three-canvas';
+    container.appendChild(canvas);
+    const hint = document.createElement('div');
+    hint.className = 'three-hint'; hint.textContent = '🖱 Arraste para girar';
+    container.appendChild(hint);
+
+    const renderer = new THREE.WebGLRenderer({ canvas, antialias: true, alpha: true });
+    renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+    renderer.shadowMap.enabled = true;
+    activeRenderer = renderer;
+
+    const rect = container.getBoundingClientRect();
+    renderer.setSize(rect.width || 500, rect.height || 500);
+    const scene = new THREE.Scene();
+    const camera = new THREE.PerspectiveCamera(50, (rect.width||500)/(rect.height||500), 0.1, 100);
+    camera.position.set(0, 1.5, 5);
+
+    // Lighting
+    scene.add(new THREE.AmbientLight(0x223344, 2));
+    const dLight = new THREE.DirectionalLight(0x00e5a0, 3);
+    dLight.position.set(5, 8, 5);
+    scene.add(dLight);
+    const pLight = new THREE.PointLight(0x7b5cfa, 4, 15);
+    pLight.position.set(-4, 2, -2);
+    scene.add(pLight);
+    const pLight2 = new THREE.PointLight(0xff4d6d, 2, 10);
+    pLight2.position.set(3, -2, 3);
+    scene.add(pLight2);
+
+    const group = new THREE.Group();
+    scene.add(group);
+
+    const mat = new THREE.MeshStandardMaterial({ color: 0x223355, metalness: 0.95, roughness: 0.15 });
+    const accentMat = new THREE.MeshStandardMaterial({ color: 0x00e5a0, metalness: 0.8, roughness: 0.2, emissive: 0x004422, emissiveIntensity: 0.3 });
+
+    // Main cylinder body
+    const body = new THREE.Mesh(new THREE.CylinderGeometry(1, 1, 0.6, 32), mat);
+    group.add(body);
+
+    // Inner ring
+    const inner = new THREE.Mesh(new THREE.CylinderGeometry(0.5, 0.5, 0.7, 32), accentMat);
+    group.add(inner);
+
+    // Teeth / spokes
+    for (let i = 0; i < 10; i++) {
+      const angle = (i / 10) * Math.PI * 2;
+      const spoke = new THREE.Mesh(new THREE.BoxGeometry(0.25, 0.65, 0.18), mat);
+      spoke.position.x = Math.cos(angle) * 1.18;
+      spoke.position.z = Math.sin(angle) * 1.18;
+      spoke.rotation.y = -angle;
+      group.add(spoke);
+    }
+
+    // Bolts
+    for (let i = 0; i < 6; i++) {
+      const angle = (i / 6) * Math.PI * 2;
+      const bolt = new THREE.Mesh(new THREE.CylinderGeometry(0.08, 0.08, 0.75, 8), accentMat);
+      bolt.position.x = Math.cos(angle) * 0.72;
+      bolt.position.z = Math.sin(angle) * 0.72;
+      group.add(bolt);
+    }
+
+    // Top disc
+    const disc = new THREE.Mesh(new THREE.CylinderGeometry(1.3, 1.3, 0.1, 64), new THREE.MeshStandardMaterial({ color: 0x1a2a3a, metalness: 1, roughness: 0.1 }));
+    disc.position.y = 0.35;
+    group.add(disc);
+
+    group.rotation.x = 0.4;
+
+    // Mouse drag
+    let isDragging = false, lastX = 0, lastY = 0, rotX = 0.4, rotY = 0;
+    canvas.addEventListener('mousedown', e => { isDragging = true; lastX = e.clientX; lastY = e.clientY; });
+    canvas.addEventListener('touchstart', e => { isDragging = true; lastX = e.touches[0].clientX; lastY = e.touches[0].clientY; });
+    window.addEventListener('mouseup', () => isDragging = false);
+    window.addEventListener('touchend', () => isDragging = false);
+    window.addEventListener('mousemove', e => {
+      if (!isDragging) return;
+      rotY += (e.clientX - lastX) * 0.01; rotX += (e.clientY - lastY) * 0.005;
+      lastX = e.clientX; lastY = e.clientY;
+    });
+    window.addEventListener('touchmove', e => {
+      if (!isDragging) return;
+      rotY += (e.touches[0].clientX - lastX) * 0.012; rotX += (e.touches[0].clientY - lastY) * 0.006;
+      lastX = e.touches[0].clientX; lastY = e.touches[0].clientY;
+    });
+
+    function animate() {
+      animFrameId = requestAnimationFrame(animate);
+      if (!isDragging) rotY += 0.007;
+      group.rotation.y = rotY; group.rotation.x = rotX;
+      inner.rotation.y -= 0.015;
+      renderer.render(scene, camera);
+    }
+    animate();
+  }
+
+  // ===== 3D ARCH (architectural scene) =====
+  function buildThreeArch(container) {
+    container.style.background = 'linear-gradient(180deg, #0a0810 0%, #1a1208 100%)';
+    const canvas = document.createElement('canvas');
+    canvas.id = 'three-canvas2';
+    container.appendChild(canvas);
+    const hint = document.createElement('div');
+    hint.className = 'three-hint'; hint.textContent = '🖱 Arraste para girar';
+    container.appendChild(hint);
+
+    const rect = container.getBoundingClientRect();
+    const renderer = new THREE.WebGLRenderer({ canvas, antialias: true, alpha: true });
+    renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+    renderer.setSize(rect.width || 500, rect.height || 500);
+    renderer.shadowMap.enabled = true;
+    activeRenderer = renderer;
+
+    const scene = new THREE.Scene();
+    const camera = new THREE.PerspectiveCamera(55, (rect.width||500)/(rect.height||500), 0.1, 100);
+    camera.position.set(6, 5, 8);
+    camera.lookAt(0, 1, 0);
+
+    scene.add(new THREE.AmbientLight(0xffd080, 0.8));
+    const sun = new THREE.DirectionalLight(0xfff0d0, 3);
+    sun.position.set(8, 10, 5); sun.castShadow = true; scene.add(sun);
+    const fill = new THREE.PointLight(0x4488cc, 2, 20); fill.position.set(-5, 3, -3); scene.add(fill);
+
+    const group = new THREE.Group();
+    scene.add(group);
+
+    const floorMat = new THREE.MeshStandardMaterial({ color: 0x2a2010, roughness: 0.9, metalness: 0.1 });
+    const wallMat = new THREE.MeshStandardMaterial({ color: 0xe8dcc0, roughness: 0.8, metalness: 0 });
+    const glassMat = new THREE.MeshStandardMaterial({ color: 0x88aacc, transparent: true, opacity: 0.35, roughness: 0, metalness: 0.1 });
+    const roofMat = new THREE.MeshStandardMaterial({ color: 0x3a3028, roughness: 0.7, metalness: 0.2 });
+
+    // Floor
+    const floor = new THREE.Mesh(new THREE.BoxGeometry(8, 0.2, 6), floorMat);
+    floor.position.y = -0.1; group.add(floor);
+    // Walls
+    const wallBack = new THREE.Mesh(new THREE.BoxGeometry(8, 3, 0.2), wallMat);
+    wallBack.position.set(0, 1.5, -2.9); group.add(wallBack);
+    const wallLeft = new THREE.Mesh(new THREE.BoxGeometry(0.2, 3, 6), wallMat);
+    wallLeft.position.set(-3.9, 1.5, 0); group.add(wallLeft);
+    // Roof
+    const roof = new THREE.Mesh(new THREE.BoxGeometry(8.4, 0.2, 6.4), roofMat);
+    roof.position.y = 3.1; group.add(roof);
+    // Glass facade
+    const glass = new THREE.Mesh(new THREE.BoxGeometry(8, 3, 0.15), glassMat);
+    glass.position.set(0, 1.5, 3.0); group.add(glass);
+    // Columns
+    for (let x of [-3, -1, 1, 3]) {
+      const col = new THREE.Mesh(new THREE.CylinderGeometry(0.12, 0.14, 3.1, 8), wallMat);
+      col.position.set(x, 1.55, 3.0); group.add(col);
+    }
+    // Interior wall detail
+    const strip = new THREE.Mesh(new THREE.BoxGeometry(8, 0.15, 0.1), new THREE.MeshStandardMaterial({ color: 0xc8a050, metalness: 0.6, roughness: 0.3 }));
+    strip.position.set(0, 2.2, -2.85); group.add(strip);
+
+    group.rotation.y = 0.4;
+
+    let isDragging = false, lastX = 0, rotY = 0.4;
+    canvas.addEventListener('mousedown', e => { isDragging = true; lastX = e.clientX; });
+    canvas.addEventListener('touchstart', e => { isDragging = true; lastX = e.touches[0].clientX; });
+    window.addEventListener('mouseup', () => isDragging = false);
+    window.addEventListener('touchend', () => isDragging = false);
+    window.addEventListener('mousemove', e => {
+      if (!isDragging) return;
+      rotY += (e.clientX - lastX) * 0.01; lastX = e.clientX;
+    });
+    window.addEventListener('touchmove', e => {
+      if (!isDragging) return;
+      rotY += (e.touches[0].clientX - lastX) * 0.012; lastX = e.touches[0].clientX;
+    });
+
+    function animate() {
+      animFrameId = requestAnimationFrame(animate);
+      if (!isDragging) rotY += 0.004;
+      group.rotation.y = rotY;
+      renderer.render(scene, camera);
+    }
+    animate();
+  }
+
+  // ===== UI/UX MOCKUP =====
+  function buildUIUX(container) {
+    container.innerHTML = `
+      <div class="phone-wrap">
+        <div class="phone-frame">
+          <div class="phone-notch"></div>
+          <div class="phone-screen" style="background:#0d0d18; padding-top:28px;">
+            <div style="background:#111122; padding:0.7rem 1rem; display:flex; justify-content:space-between; align-items:center;">
+              <span style="font-size:0.6rem; color:#00e5a0; font-weight:700; letter-spacing:2px;">DASHBOARD</span>
+              <div style="width:24px; height:24px; border-radius:50%; background:linear-gradient(135deg,#7b5cfa,#00e5a0);"></div>
+            </div>
+            <div style="padding:0.8rem; display:flex; flex-direction:column; gap:0.6rem;">
+              <div style="background:#1a1a2e; border-radius:10px; padding:0.8rem; border:1px solid rgba(0,229,160,0.1);">
+                <div style="font-size:0.5rem; color:#7a7a8c; letter-spacing:2px; margin-bottom:0.3rem;">RECEITA TOTAL</div>
+                <div style="font-size:1.1rem; font-weight:700; color:#00e5a0; font-family:'Bebas Neue',sans-serif; letter-spacing:2px;">R$ 48.320</div>
+                <div style="height:30px; margin-top:0.5rem; display:flex; align-items:flex-end; gap:2px;">
+                  ${[40,65,45,80,55,90,70,85,60,95].map(h => `<div style="flex:1; height:${h}%; background:linear-gradient(180deg,#00e5a0,rgba(0,229,160,0.2)); border-radius:1px;"></div>`).join('')}
+                </div>
+              </div>
+              <div style="display:grid; grid-template-columns:1fr 1fr; gap:0.5rem;">
+                <div style="background:#1a1a2e; border-radius:8px; padding:0.7rem; border:1px solid rgba(123,92,250,0.15);">
+                  <div style="font-size:0.45rem; color:#7a7a8c; letter-spacing:1px; margin-bottom:0.2rem;">PROJETOS</div>
+                  <div style="font-size:0.9rem; font-weight:700; color:#7b5cfa; font-family:'Bebas Neue',sans-serif;">24</div>
+                </div>
+                <div style="background:#1a1a2e; border-radius:8px; padding:0.7rem; border:1px solid rgba(255,77,109,0.15);">
+                  <div style="font-size:0.45rem; color:#7a7a8c; letter-spacing:1px; margin-bottom:0.2rem;">PENDENTES</div>
+                  <div style="font-size:0.9rem; font-weight:700; color:#ff4d6d; font-family:'Bebas Neue',sans-serif;">7</div>
+                </div>
+              </div>
+              <div style="background:#1a1a2e; border-radius:8px; padding:0.7rem; border:1px solid rgba(255,255,255,0.05);">
+                <div style="font-size:0.5rem; color:#7a7a8c; letter-spacing:1px; margin-bottom:0.5rem;">TAREFAS RECENTES</div>
+                ${['Identidade Visual','Modelo 3D Industrial','UI Redesign'].map((t,i) => `
+                  <div style="display:flex; align-items:center; gap:0.5rem; padding:0.3rem 0; border-bottom:1px solid rgba(255,255,255,0.04);">
+                    <div style="width:6px; height:6px; border-radius:50%; background:${['#00e5a0','#7b5cfa','#ff4d6d'][i]};"></div>
+                    <span style="font-size:0.5rem; color:#f0eee8;">${t}</span>
+                  </div>`).join('')}
+              </div>
+            </div>
+            <div style="position:absolute; bottom:0; left:0; right:0; background:#111122; padding:0.6rem; display:flex; justify-content:space-around; border-top:1px solid rgba(255,255,255,0.05);">
+              ${['⊞','◎','✉','⚙'].map(ic => `<span style="font-size:0.9rem; color:#7a7a8c;">${ic}</span>`).join('')}
+            </div>
+          </div>
+        </div>
+      </div>
+    `;
+  }
+
+  // ===== MOTION GRAPHICS =====
+  function buildMotion(container) {
+    container.style.background = '#120810';
+    const canvas = document.createElement('canvas');
+    canvas.id = 'motion-canvas';
+    container.appendChild(canvas);
+    const ctx = canvas.getContext('2d');
+
+    function resize() {
+      const r = container.getBoundingClientRect();
+      canvas.width = r.width || 500;
+      canvas.height = r.height || 450;
+    }
+    resize();
+
+    const particles = Array.from({length: 60}, () => ({
+      x: Math.random() * canvas.width,
+      y: Math.random() * canvas.height,
+      r: Math.random() * 2.5 + 0.5,
+      vx: (Math.random() - 0.5) * 0.8,
+      vy: (Math.random() - 0.5) * 0.8,
+      color: ['#00e5a0','#7b5cfa','#ff4d6d'][Math.floor(Math.random()*3)],
+      alpha: Math.random() * 0.8 + 0.2
+    }));
+
+    let t = 0;
+    function draw() {
+      animFrameId = requestAnimationFrame(draw);
+      t += 0.02;
+      ctx.fillStyle = 'rgba(18,8,16,0.15)';
+      ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+      // Rings
+      for (let i = 0; i < 4; i++) {
+        const rad = 60 + i * 35 + Math.sin(t + i) * 10;
+        ctx.beginPath();
+        ctx.arc(canvas.width/2, canvas.height/2, rad, 0, Math.PI*2);
+        ctx.strokeStyle = `rgba(${i%2===0?'0,229,160':'123,92,250'},${0.15 - i*0.02})`;
+        ctx.lineWidth = 1;
+        ctx.stroke();
+      }
+
+      // Rotating lines
+      for (let i = 0; i < 6; i++) {
+        const angle = t * (0.5 + i*0.1) + (i/6)*Math.PI*2;
+        const len = 50 + Math.sin(t*2 + i) * 20;
+        const cx = canvas.width/2, cy = canvas.height/2;
+        ctx.beginPath();
+        ctx.moveTo(cx + Math.cos(angle)*60, cy + Math.sin(angle)*60);
+        ctx.lineTo(cx + Math.cos(angle)*(60+len), cy + Math.sin(angle)*(60+len));
+        ctx.strokeStyle = ['#00e5a0','#7b5cfa','#ff4d6d','#00e5a0','#7b5cfa','#ff4d6d'][i];
+        ctx.lineWidth = 2; ctx.globalAlpha = 0.7; ctx.stroke(); ctx.globalAlpha = 1;
+      }
+
+      // Central pulsing dot
+      const pulse = Math.sin(t*3)*0.3 + 0.7;
+      const grd = ctx.createRadialGradient(canvas.width/2, canvas.height/2, 0, canvas.width/2, canvas.height/2, 30*pulse);
+      grd.addColorStop(0, 'rgba(0,229,160,0.9)');
+      grd.addColorStop(1, 'rgba(0,229,160,0)');
+      ctx.fillStyle = grd;
+      ctx.beginPath();
+      ctx.arc(canvas.width/2, canvas.height/2, 30*pulse, 0, Math.PI*2);
+      ctx.fill();
+
+      // Particles
+      particles.forEach(p => {
+        p.x += p.vx; p.y += p.vy;
+        if (p.x < 0 || p.x > canvas.width) p.vx *= -1;
+        if (p.y < 0 || p.y > canvas.height) p.vy *= -1;
+        ctx.beginPath();
+        ctx.arc(p.x, p.y, p.r, 0, Math.PI*2);
+        ctx.fillStyle = p.color;
+        ctx.globalAlpha = p.alpha * (0.5 + Math.sin(t*2)*0.3);
+        ctx.fill(); ctx.globalAlpha = 1;
+      });
+
+      // Text overlay
+      ctx.font = `bold ${14 + Math.sin(t)*2}px 'Bebas Neue', sans-serif`;
+      ctx.letterSpacing = '4px';
+      ctx.fillStyle = 'rgba(240,238,232,0.6)';
+      ctx.textAlign = 'center';
+      ctx.fillText('CAMPANHA DIGITAL', canvas.width/2, canvas.height - 40);
+      ctx.font = '9px Space Mono, monospace';
+      ctx.fillStyle = 'rgba(0,229,160,0.5)';
+      ctx.fillText('MOTION GRAPHICS · AFTER EFFECTS', canvas.width/2, canvas.height - 20);
+    }
+    draw();
+  }
+
+  // ===== CONTACT PAGE =====
+  function openContactPage(projectTitle) {
+    // Close the project modal first
+    closeModal();
+    setTimeout(() => {
+      const cpage = document.getElementById('contact-page');
+      document.getElementById('cpage-project-name').textContent = projectTitle || '—';
+      // Reset form
+      document.getElementById('cpage-form').style.display = 'flex';
+      document.getElementById('cpage-success').style.display = 'none';
+      ['cf-name','cf-empresa','cf-email','cf-phone','cf-msg'].forEach(id => {
+        const el = document.getElementById(id);
+        if (el) el.value = '';
+      });
+      ['cf-servico','cf-orcamento'].forEach(id => {
+        const el = document.getElementById(id);
+        if (el) el.selectedIndex = 0;
+      });
+      cpage.classList.add('open');
+      document.body.style.overflow = 'hidden';
+    }, 420);
+  }
+
+  function closeContactPage() {
+    const cpage = document.getElementById('contact-page');
+    cpage.classList.remove('open');
+    document.body.style.overflow = '';
+  }
+
+  function submitContactForm() {
+    const name = document.getElementById('cf-name').value.trim();
+    const email = document.getElementById('cf-email').value.trim();
+    if (!name || !email) {
+      document.getElementById('cf-name').style.borderColor = name ? '' : 'var(--accent3)';
+      document.getElementById('cf-email').style.borderColor = email ? '' : 'var(--accent3)';
+      return;
+    }
+    document.getElementById('cpage-form').style.display = 'none';
+    document.getElementById('cpage-success').style.display = 'block';
+  }
+
+  // ===== BRANDING MOCKUP =====
+  function buildBranding(container) {
+    container.innerHTML = `
+      <div style="width:100%; height:100%; background:#0d0d12; display:flex; flex-direction:column; align-items:center; justify-content:center; gap:1.2rem; padding:2rem; overflow:hidden;">
+        <div style="font-family:'Bebas Neue',sans-serif; font-size:2.8rem; letter-spacing:8px; color:#00e5a0; animation:slideInBrand 0.4s ease both;">NEXTECH</div>
+        <div style="width:80%; height:1px; background:linear-gradient(90deg, transparent, #00e5a0, transparent);"></div>
+        <div style="display:flex; gap:0.6rem; animation:slideInBrand 0.4s 0.1s ease both;">
+          ${[['#00e5a0','Verde Elétrico'],['#7b5cfa','Violeta'],['#ff4d6d','Coral'],['#0d0d18','Preto'],['#f0eee8','Off-white']].map(([c,n]) =>
+            `<div style="display:flex; flex-direction:column; align-items:center; gap:0.3rem;">
+              <div style="width:40px; height:40px; background:${c}; border-radius:4px; box-shadow:0 4px 12px ${c}40;"></div>
+              <span style="font-size:0.45rem; color:#7a7a8c; text-transform:uppercase; letter-spacing:1px;">${n}</span>
+            </div>`
+          ).join('')}
+        </div>
+        <div style="background:#111118; border:1px solid rgba(0,229,160,0.1); padding:1rem 1.5rem; width:80%; animation:slideInBrand 0.4s 0.2s ease both;">
+          <div style="font-size:0.55rem; color:#7a7a8c; letter-spacing:3px; margin-bottom:0.5rem;">TIPOGRAFIA PRINCIPAL</div>
+          <div style="font-family:'Bebas Neue',sans-serif; font-size:1.6rem; color:#f0eee8; letter-spacing:4px;">BEBAS NEUE</div>
+          <div style="font-family:'Syne',sans-serif; font-size:0.75rem; color:#7a7a8c; margin-top:0.3rem; font-weight:600;">Syne — Corpo de Texto</div>
+        </div>
+        <div style="display:flex; gap:0.8rem; width:80%; animation:slideInBrand 0.4s 0.3s ease both;">
+          <div style="flex:1; height:50px; background:linear-gradient(135deg,#00e5a0,#0a8a5a); border-radius:4px; display:flex; align-items:center; justify-content:center;">
+            <span style="font-size:0.55rem; font-weight:700; letter-spacing:2px; color:#060608;">BOTÃO PRIMÁRIO</span>
+          </div>
+          <div style="flex:1; height:50px; border:1px solid #00e5a0; border-radius:4px; display:flex; align-items:center; justify-content:center;">
+            <span style="font-size:0.55rem; font-weight:700; letter-spacing:2px; color:#00e5a0;">OUTLINE</span>
+          </div>
+        </div>
+      </div>
+    `;
+  }
+
+  // ===== BRAND MANUAL SLIDES =====
+  function buildBrandManual(container) {
+    const slides = [
+      { bg:'#0d0d18', content:`<div style="text-align:center"><div style="font-size:0.55rem; color:#7b5cfa; letter-spacing:4px; margin-bottom:0.8rem;">SLIDE 01 — CAPA</div><div style="font-family:'Bebas Neue',sans-serif; font-size:3rem; letter-spacing:6px; color:#f0eee8; line-height:1;">MANUAL DE<br><span style="color:#7b5cfa">IDENTIDADE</span><br>VISUAL</div><div style="width:60px; height:2px; background:#7b5cfa; margin:1rem auto;"></div><div style="font-size:0.6rem; color:#7a7a8c; letter-spacing:3px;">REDE DE VAREJO · 2022</div></div>` },
+      { bg:'#0d0d18', content:`<div style="width:100%"><div style="font-size:0.55rem; color:#7b5cfa; letter-spacing:4px; margin-bottom:1rem;">SLIDE 02 — LOGOTIPO</div><div style="background:#111; padding:1.5rem; border-radius:4px; text-align:center; margin-bottom:1rem;"><div style="font-family:'Bebas Neue',sans-serif; font-size:2.5rem; letter-spacing:8px; color:#7b5cfa;">VAREJO<span style="color:#f0eee8">+</span></div></div><div style="display:flex; gap:0.5rem;"><div style="flex:1; background:#f0eee8; padding:0.8rem; border-radius:4px; text-align:center;"><div style="font-family:'Bebas Neue',sans-serif; font-size:1rem; letter-spacing:4px; color:#7b5cfa;">VAREJO<span style="color:#0d0d18">+</span></div><div style="font-size:0.4rem; color:#7a7a8c; margin-top:0.3rem;">FUNDO CLARO</div></div><div style="flex:1; background:#111; padding:0.8rem; border-radius:4px; text-align:center; border:1px solid #333;"><div style="font-family:'Bebas Neue',sans-serif; font-size:1rem; letter-spacing:4px; color:#7b5cfa;">VAREJO<span style="color:#f0eee8">+</span></div><div style="font-size:0.4rem; color:#7a7a8c; margin-top:0.3rem;">FUNDO ESCURO</div></div></div></div>` },
+      { bg:'#0d0d18', content:`<div style="width:100%"><div style="font-size:0.55rem; color:#7b5cfa; letter-spacing:4px; margin-bottom:1rem;">SLIDE 03 — PALETA</div><div style="display:flex; flex-direction:column; gap:0.5rem;">${[['#7b5cfa','Violeta Primário','#7B5CFA'],['#5a3dd4','Violeta Escuro','#5A3DD4'],['#f0eee8','Off-white','#F0EEE8'],['#0d0d18','Preto','#0D0D18'],['#7a7a8c','Cinza','#7A7A8C']].map(([c,n,hex]) => `<div style="display:flex; align-items:center; gap:0.8rem;"><div style="width:36px; height:28px; background:${c}; border-radius:3px; flex-shrink:0;"></div><span style="font-size:0.6rem; color:#f0eee8; flex:1;">${n}</span><span style="font-size:0.55rem; color:#7a7a8c; font-family:'Space Mono',monospace;">${hex}</span></div>`).join('')}</div></div>` },
+      { bg:'#0d0d18', content:`<div style="width:100%"><div style="font-size:0.55rem; color:#7b5cfa; letter-spacing:4px; margin-bottom:1rem;">SLIDE 04 — APLICAÇÃO</div><div style="display:flex; flex-direction:column; gap:0.6rem;"><div style="background:linear-gradient(135deg,#7b5cfa,#5a3dd4); border-radius:6px; padding:1rem; display:flex; align-items:center; justify-content:space-between;"><div><div style="font-family:'Bebas Neue',sans-serif; font-size:1.1rem; letter-spacing:4px; color:white;">SACOLA</div><div style="font-size:0.45rem; color:rgba(255,255,255,0.6);">EMBALAGEM PREMIUM</div></div><div style="font-family:'Bebas Neue',sans-serif; font-size:1.8rem; color:white; opacity:0.3;">VAREJO+</div></div><div style="background:#111; border-radius:6px; padding:0.8rem; border:1px solid rgba(123,92,250,0.3);"><div style="font-size:0.45rem; color:#7a7a8c; letter-spacing:2px; margin-bottom:0.4rem;">CARTÃO DE VISITA</div><div style="font-family:'Bebas Neue',sans-serif; color:#7b5cfa; font-size:0.9rem; letter-spacing:3px;">VAREJO+</div><div style="font-size:0.45rem; color:#7a7a8c; margin-top:0.3rem;">contato@varejo.com.br · (11) 9999-9999</div></div></div></div>` }
+    ];
+
+    let current = 0;
+    container.innerHTML = `<div class="slide-deck" id="brand-deck"></div>`;
+    const deck = container.querySelector('#brand-deck');
+
+    slides.forEach((s, i) => {
+      const el = document.createElement('div');
+      el.className = 'slide' + (i === 0 ? ' active' : '');
+      el.style.cssText = `background:${s.bg}; padding:1.5rem;`;
+      el.innerHTML = s.content;
+      deck.appendChild(el);
+    });
+
+    const nav = document.createElement('div'); nav.className = 'slide-nav';
+    slides.forEach((_, i) => {
+      const dot = document.createElement('div');
+      dot.className = 'slide-dot' + (i===0?' active':'');
+      dot.addEventListener('click', () => goTo(i));
+      nav.appendChild(dot);
+    });
+    deck.appendChild(nav);
+
+    const prev = document.createElement('div'); prev.className = 'slide-arrow slide-prev'; prev.textContent = '←';
+    const next = document.createElement('div'); next.className = 'slide-arrow slide-next'; next.textContent = '→';
+    deck.appendChild(prev); deck.appendChild(next);
+
+    function goTo(n) {
+      deck.querySelectorAll('.slide')[current].classList.remove('active');
+      deck.querySelectorAll('.slide-dot')[current].classList.remove('active');
+      current = (n + slides.length) % slides.length;
+      deck.querySelectorAll('.slide')[current].classList.add('active');
+      deck.querySelectorAll('.slide-dot')[current].classList.add('active');
+    }
+    prev.addEventListener('click', () => goTo(current - 1));
+    next.addEventListener('click', () => goTo(current + 1));
+    
+    // Auto-advance
+    const slideInterval = setInterval(() => {
+      if (!modal.classList.contains('open')) { clearInterval(slideInterval); return; }
+      goTo(current + 1);
+    }, 3000);
+  }
+
+</script>
+</body>
+</html>
